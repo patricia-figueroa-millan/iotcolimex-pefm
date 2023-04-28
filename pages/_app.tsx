@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import { MantineProvider } from "@mantine/core";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider, Session } from "@supabase/auth-helpers-react";
+import Layout from "@/components/Layout";
 
 export default function App({
   Component,
@@ -21,7 +22,9 @@ export default function App({
           supabaseClient={supabase}
           initialSession={pageProps.initialSession}
         >
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </SessionContextProvider>
       </MantineProvider>
     </>
