@@ -4,12 +4,15 @@ import { useUser, useSupabaseClient, Session } from '@supabase/auth-helpers-reac
 import { Database } from '../utils/database.types'
 // COMPONENTE "Account" anida a componente "Avatar"
 import Avatar from './Avatar'
+import { SimpleGrid } from '@mantine/core';
+
 import ApplicationShell from './ApplicationShell'
+import Layout from './Layout'
+
 import { Button } from '@mantine/core';
 import { AppShell, Navbar, Header } from '@mantine/core';
 type Profiles = Database['public']['Tables']['profiles']['Row']
-
-
+import { NativeSelect } from '@mantine/core';
 export default function Account({ session }: { session: Session }) {
   const supabase = useSupabaseClient<Database>()
   const user = useUser()
@@ -84,15 +87,29 @@ export default function Account({ session }: { session: Session }) {
 
   return (
     <div>
-      {/* Add to the body */}
-      {/* Componente de Header*/}
-      <ApplicationShell/>
-      {/* Componente de Side bar*/}
-      <div style={{float:'right'}}>
-      <Button className="button block" onClick={() => supabase.auth.signOut()}>
-        Sign Out
-       </Button>
-       </div>
-    </div>
+      <Layout>
+        <div style={{width:"10%"}}>
+          <NativeSelect
+          data={['1','2','3','4']}
+          label="Nodo"
+          description="Seleccionar estación"
+          size="md"
+          />
+        </div>
+        <label style={{display:"block", margin:"30px 0 0 0", fontFamily:"Arial"}}>Último valor sensado</label>
+        <div style={{padding:"30px 0 0 0"}}>
+            <SimpleGrid cols={5} spacing="sm">
+            <div style={{width:"200px", height:"200px", borderStyle:"solid", borderColor:"black"}}></div>
+            <div style={{width:"200px", height:"200px", borderStyle:"solid", borderColor:"black"}}></div>
+            <div style={{width:"200px", height:"200px", borderStyle:"solid", borderColor:"black"}}></div>
+            <div style={{width:"200px", height:"200px", borderStyle:"solid", borderColor:"black"}}></div>
+            <div style={{width:"200px", height:"200px", borderStyle:"solid", borderColor:"black"}}></div>
+            </SimpleGrid>
+        </div>
+        <span style={{padding:"50px"}}> </span>
+        <div style={{width:"1200px", height:"200px", borderStyle:"solid", borderColor:"black"}}></div>
+      </Layout>
+      </div> 
   )
 }
+
