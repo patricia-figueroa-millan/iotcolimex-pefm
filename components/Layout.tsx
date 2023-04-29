@@ -9,10 +9,27 @@ import {
   useUser,
   useSupabaseClient,
   Session,
+  useSession,
 } from "@supabase/auth-helpers-react";
+import { useRouter } from "next/router";
 
 export default function Layout({ children }: any) {
+  const router = useRouter();
+  const session = useSession();
   const supabase = useSupabaseClient<Database>();
+
+  async function handleSignOut() {
+    // Terminate the session with Supabase
+    await supabase.auth.signOut();
+
+    // Redirect to /
+    router.push("/");
+  }
+
+  // We want to return empty Layout when no session is set, i.e. when in login page
+  if (!session) return <>{children}</>;
+
+  // Return the Layout if the session is set
   return (
     <AppShell
       padding="md"
@@ -81,10 +98,7 @@ export default function Layout({ children }: any) {
               </div>
             </Box>
           }
-          <Button
-            className="button block"
-            onClick={() => supabase.auth.signOut()}
-          >
+          <Button className="button block" onClick={handleSignOut}>
             Sign Out
           </Button>
         </Navbar>
