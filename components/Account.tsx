@@ -96,10 +96,7 @@ export default function Account({ session }: { session: Session }) {
   }
 
   
-  const [temp, setTemp] = useState<any | null>(null)
-  const [humidity, setHumidity] = useState <any | null> (null)
-  const [fetchError, setFetchError] = useState('')
-
+  const [temp, setTemp] = useState<any>(null)
 
   useEffect (()=> {
     const fetchTemp = async () => {
@@ -108,14 +105,13 @@ export default function Account({ session }: { session: Session }) {
     .select('temperature ,atm_pressure, rel_humidity, wind_speed, soil_moisture')
     .order('id',{ascending:false})
     .limit(1)
-    let dataTemp = JSON.stringify(data,null,0)
     let {data:datos} = data
-    let dataTemp1 = JSON.stringify(datos,null,0)
-    console.log(data)
-    console.log(typeof(data))
-    console.log(datos)
-    console.log(typeof(datos))
-    setTemp(dataTemp1)
+    console.log(datos)    
+    let datos_array = Object.values(datos[0])
+    console.log(datos_array)
+    // @ts-ignore
+    console.log(datos[0].temperature)
+    setTemp(datos_array)
     }
     fetchTemp()
   },[])
@@ -159,50 +155,72 @@ export default function Account({ session }: { session: Session }) {
           <div
             style={{
               width: "200px",
-              height: "200px",
-              borderStyle: "solid",
+              height: "100px",
               borderColor: "black",
+              backgroundColor:"red",
+              color:"white",
+              textAlign:"center"
             }}
           >
             {/*
             <button onClick={getData}>Click me</button>
              */}
-          
-           <pre>{temp}</pre>
-          
+             {/*<table>
+             <tr>
+                <td>{temp[0]}</td>
+                <td>{temp[1]}</td>
+                <td>{temp[2]}</td>
+                <td>{temp[3]}</td>
+                <td>{temp[4]}</td>
+              </tr>
+            </table>*/}
+            {/*<h1>{temp[0]}</h1>*/}
+                  
           </div>
           <div
             style={{
               width: "200px",
-              height: "200px",
+              height: "100px",
               borderStyle: "solid",
               borderColor: "black",
-            }}
-          ></div>
+              textAlign:"center"
+            }}  
+          >
+            {/*<h1>{temp[0]}</h1>*/}
+          </div>
           <div
             style={{
               width: "200px",
-              height: "200px",
+              height: "100px",
               borderStyle: "solid",
               borderColor: "black",
+              textAlign:"center"
             }}
-          ></div>
+          >
+            {/*<h1>{temp[0]}</h1>*/}
+          </div>
           <div
             style={{
               width: "200px",
-              height: "200px",
+              height: "100px",
               borderStyle: "solid",
               borderColor: "black",
+              textAlign:"center"
             }}
-          ></div>
+          >
+            {/*<h1>{temp[0]}</h1>*/}
+          </div>
           <div
             style={{
               width: "200px",
-              height: "200px",
+              height: "100px",
               borderStyle: "solid",
               borderColor: "black",
+              textAlign:"center"
             }}
-          ></div>
+          >
+            {/*<h1>{temp[0]}</h1>*/}
+          </div>
         </SimpleGrid>
       </div>
       <span style={{ padding: "50px" }}> </span>
@@ -212,8 +230,11 @@ export default function Account({ session }: { session: Session }) {
           height: "200px",
           borderStyle: "solid",
           borderColor: "black",
+          textAlign:"center"
         }}
-      ></div>
+      >
+        
+      </div>
     </div>
   );
 }
