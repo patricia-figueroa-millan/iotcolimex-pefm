@@ -68,6 +68,7 @@ export default function Reportes_Tabular() {
                         </tr>
                     </thead>
                     <tbody></tbody>
+
                 </Table>
             </div>
         </Fragment>

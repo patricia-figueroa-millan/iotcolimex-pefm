@@ -1,22 +1,17 @@
-import { Button, AppShell, Navbar, Header } from "@mantine/core";
+import { Button, AppShell, Navbar, Header, Image, Modal } from "@mantine/core";
 import Link from "next/link";
 // @ts-ignore
 import { Database } from "../utils/database.types";
-
-import { Badge, Box, NavLink } from "@mantine/core";
-
-import {
-  useUser,
-  useSupabaseClient,
-  Session,
-  useSession,
-} from "@supabase/auth-helpers-react";
+import { Box, NavLink } from "@mantine/core";
+import { useSupabaseClient, useSession } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
+import { useDisclosure } from "@mantine/hooks";
 
 export default function Layout({ children }: any) {
   const router = useRouter();
   const session = useSession();
   const supabase = useSupabaseClient<Database>();
+  const [opened, { open, close }] = useDisclosure(false);
 
   async function handleSignOut() {
     // Terminate the session with Supabase
@@ -106,8 +101,55 @@ export default function Layout({ children }: any) {
       header={
         <Header height={60} p="xs">
           {/* Header content */}
-          <div style={{ padding: "10px 0 0 20px" }}>
+          <div
+            style={{
+              padding: "10px 0 0 30px",
+              float: "left",
+              fontSize: "18px",
+            }}
+          >
             <label>MENÚ</label>
+          </div>
+
+          <div style={{ float: "right", overflow: "hidden" }}>
+            <Modal opened={opened} onClose={close} title="Cuenta" centered>
+              {
+                <div>
+                  <div style={{ textAlign: "center", margin: "0 0 10px 0" }}>
+                    <label>Correo electrónico</label>
+                    <br></br>
+                    <label>Número telefónico</label>
+                  </div>
+
+                  <div style={{ textAlign: "center", margin: "0 0 10px 0" }}>
+                    <Button color="green" onClick={close}>
+                      <Link
+                        href={"/cuenta_usuario"}
+                        style={{ color: "white", textDecoration: "none" }}
+                      >
+                        Gestionar cuenta
+                      </Link>
+                    </Button>
+                  </div>
+
+                  <div style={{ textAlign: "center" }}>
+                    <Button className="button block" onClick={handleSignOut}>
+                      Cerrar Sesión
+                    </Button>
+                  </div>
+                </div>
+              }
+            </Modal>
+            <Image
+              onClick={open}
+              maw={40}
+              fit="contain"
+              mx="auto"
+              radius="md"
+              src="./profile-user.png"
+              alt="profile image"
+              style={{ float: "right" }}
+            />
           </div>
         </Header>
       }
