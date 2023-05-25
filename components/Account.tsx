@@ -5,12 +5,12 @@ import {
   Session,
 } from "@supabase/auth-helpers-react";
 
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from "@supabase/supabase-js";
 // @ts-ignore
 import { Database } from "../utils/database.types";
 // COMPONENTE "Account" anida a componente "Avatar"
 import Avatar from "./Avatar";
-import { SimpleGrid } from "@mantine/core";
+import { SimpleGrid, Text, Title } from "@mantine/core";
 import Data from "./Data";
 import ApplicationShell from "./ApplicationShell";
 import Layout from "./Layout";
@@ -21,8 +21,10 @@ type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 import { NativeSelect } from "@mantine/core";
 
 export default function Account({ session }: { session: Session }) {
-  
-  const supabaseClient = createClient('https://frqeptoeeoyjaipcynip.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZycWVwdG9lZW95amFpcGN5bmlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzY2NTk0NzAsImV4cCI6MTk5MjIzNTQ3MH0.1cDqSRfYw2qACKURNrZyyP4OU0u2ag_YZLOYzgtPhQ0')
+  const supabaseClient = createClient(
+    "https://frqeptoeeoyjaipcynip.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZycWVwdG9lZW95amFpcGN5bmlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzY2NTk0NzAsImV4cCI6MTk5MjIzNTQ3MH0.1cDqSRfYw2qACKURNrZyyP4OU0u2ag_YZLOYzgtPhQ0"
+  );
 
   const supabase = useSupabaseClient<Database>();
   const user = useUser();
@@ -95,30 +97,33 @@ export default function Account({ session }: { session: Session }) {
     }
   }
 
-  
-  const [temp, setTemp] = useState<any>(null)
+  type DataType = {
+    temperature: number;
+    atm_pressure: number;
+    rel_humidity: number;
+    wind_speed: number;
+    soil_moisture: number;
+  };
 
-  useEffect (()=> {
+  const [temp, setTemp] = useState<any>(null);
+  const [meas, setMeas] = useState<DataType | undefined>(undefined);
+
+  useEffect(() => {
     const fetchTemp = async () => {
-      let data = await supabaseClient 
-    .from('wx_meas')
-    .select('temperature ,atm_pressure, rel_humidity, wind_speed, soil_moisture')
-    .order('id',{ascending:false})
-    .limit(1)
-    let {data:datos} = data
-    console.log(datos)    
-    let datos_array = Object.values(datos[0])
-    console.log(datos_array)
-    // @ts-ignore
-    console.log(datos[0].temperature)
-    setTemp(datos_array)
-    }
-    fetchTemp()
-  },[])
- 
-  
+      let response = await supabase
+        .from("wx_meas")
+        .select(
+          "temperature ,atm_pressure, rel_humidity, wind_speed, soil_moisture"
+        )
+        .order("id", { ascending: false })
+        .limit(1);
+      setMeas(response.data[0]);
+    };
+    fetchTemp();
+  }, []);
 
-    {/*
+  {
+    /*
   async function getData() {   
   let {data,error} = await supabaseClient 
     .from('wx_meas')
@@ -132,9 +137,9 @@ export default function Account({ session }: { session: Session }) {
     console.log(dataTemp),
     console.log(typeof(dataTemp))
     )}
-   */}
+   */
+  }
 
-  
   return (
     <div>
       <div style={{ width: "10%" }}>
@@ -156,16 +161,16 @@ export default function Account({ session }: { session: Session }) {
             style={{
               width: "200px",
               height: "100px",
+              borderStyle: "solid",
               borderColor: "black",
-              backgroundColor:"red",
-              color:"white",
-              textAlign:"center"
+              textAlign: "center",
             }}
           >
+            <Title order={1}>{meas?.temperature}</Title>
             {/*
             <button onClick={getData}>Click me</button>
              */}
-             {/*<table>
+            {/*<table>
              <tr>
                 <td>{temp[0]}</td>
                 <td>{temp[1]}</td>
@@ -175,7 +180,6 @@ export default function Account({ session }: { session: Session }) {
               </tr>
             </table>*/}
             {/*<h1>{temp[0]}</h1>*/}
-                  
           </div>
           <div
             style={{
@@ -183,10 +187,10 @@ export default function Account({ session }: { session: Session }) {
               height: "100px",
               borderStyle: "solid",
               borderColor: "black",
-              textAlign:"center"
-            }}  
+              textAlign: "center",
+            }}
           >
-            {/*<h1>{temp[0]}</h1>*/}
+            <Title order={1}>{meas?.rel_humidity} %</Title>
           </div>
           <div
             style={{
@@ -194,7 +198,18 @@ export default function Account({ session }: { session: Session }) {
               height: "100px",
               borderStyle: "solid",
               borderColor: "black",
-              textAlign:"center"
+              textAlign: "center",
+            }}
+          >
+            <Title order={1}>{meas?.atm_pressure}</Title>
+          </div>
+          <div
+            style={{
+              width: "200px",
+              height: "100px",
+              borderStyle: "solid",
+              borderColor: "black",
+              textAlign: "center",
             }}
           >
             {/*<h1>{temp[0]}</h1>*/}
@@ -205,18 +220,7 @@ export default function Account({ session }: { session: Session }) {
               height: "100px",
               borderStyle: "solid",
               borderColor: "black",
-              textAlign:"center"
-            }}
-          >
-            {/*<h1>{temp[0]}</h1>*/}
-          </div>
-          <div
-            style={{
-              width: "200px",
-              height: "100px",
-              borderStyle: "solid",
-              borderColor: "black",
-              textAlign:"center"
+              textAlign: "center",
             }}
           >
             {/*<h1>{temp[0]}</h1>*/}
@@ -230,11 +234,9 @@ export default function Account({ session }: { session: Session }) {
           height: "200px",
           borderStyle: "solid",
           borderColor: "black",
-          textAlign:"center"
+          textAlign: "center",
         }}
-      >
-        
-      </div>
+      ></div>
     </div>
   );
 }
