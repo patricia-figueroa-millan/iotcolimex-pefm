@@ -29,7 +29,7 @@ export default function Layout({ children }: any) {
     <AppShell
       padding="md"
       navbar={
-        <Navbar width={{ base: 200 }} height={600} p="xs">
+        <Navbar width={{ base: 200 }} height={700} p="xs">
           {
             <Box w={240}>
               <div style={{ margin: "0 60px 0 0" }}>
@@ -59,6 +59,7 @@ export default function Layout({ children }: any) {
                 </NavLink>
               </div>
 
+              {/*
               <div style={{ margin: "0 60px 0 0" }}>
                 <Link
                   href={"/registro_usuarios"}
@@ -91,11 +92,14 @@ export default function Layout({ children }: any) {
                   <NavLink label="CONSULTA NODOS" />
                 </Link>
               </div>
+              */}
             </Box>
           }
+          {/*
           <Button className="button block" onClick={handleSignOut}>
             Sign Out
           </Button>
+          */}
         </Navbar>
       }
       header={

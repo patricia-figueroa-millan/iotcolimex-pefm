@@ -26,11 +26,13 @@ export default function Reportes_Tabular() {
             <div style={{padding:"0 0 20px 0"}}>
                 <Grid>
                 <Grid.Col span={4}>
+                    {/*
                     <NativeSelect
                         data={["1", "2", "3", "4"]}
                         label="ESTACIÓN"
                         size="sm"
                     />
+                    */}
                 </Grid.Col>
                 <Grid.Col span={4}>
                     <DatePickerInput
