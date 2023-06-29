@@ -183,7 +183,7 @@ export default function Account({ session }: { session: Session }) {
           <Title  fz="lg">Presión atmosférica</Title>
           <div
             style={{
-              width: "200px",
+              width: "250px",
               height: "100px",
               borderStyle: "solid",
               borderColor: "black",
@@ -192,7 +192,7 @@ export default function Account({ session }: { session: Session }) {
               marginBottom:"50px"
             }}
           >
-            <Title order={1}>{meas?.atm_pressure} %</Title>
+            <Title order={1}>{meas?.atm_pressure} mbar</Title>
             <Image src="./atm_pressure.png" maw={40} mx="auto"/>
           </div>
           </div>
