@@ -37,7 +37,18 @@ export default function Layout({ children }: any) {
                   <NavLink label="DASHBOARD" />
                 </Link>
               </div>
+              <div style={{ margin: "0 60px 0 0" }}>
+                <Link href={"/recharts-test"} style={{ textDecoration: "none" }}>
+                  <NavLink label="GRÁFICAS" />
+                </Link>
+              </div>
+              
+              <Button className="button block" onClick={handleSignOut} style={{position:"absolute", bottom:"0", margin:"0 60px 20px 10px"}}>
+                Cerrar Sesión
+              </Button>
+              
 
+              {/*
               <div style={{ margin: "0 60px 0 0" }}>
                 <NavLink label="REPORTES" childrenOffset={28}>
                   <div style={{ margin: "0 60px 0 0" }}>
@@ -59,7 +70,7 @@ export default function Layout({ children }: any) {
                 </NavLink>
               </div>
 
-              {/*
+              
               <div style={{ margin: "0 60px 0 0" }}>
                 <Link
                   href={"/registro_usuarios"}
@@ -114,17 +125,14 @@ export default function Layout({ children }: any) {
           >
             <label>MENÚ</label>
           </div>
-
+          {/* 
           <div style={{ float: "right", overflow: "hidden" }}>
             <Modal opened={opened} onClose={close} title="Cuenta" centered>
               {
                 <div>
                   <div style={{ textAlign: "center", margin: "0 0 10px 0" }}>
-                    <label>Correo electrónico</label>
-                    <br></br>
-                    <label>Número telefónico</label>
                   </div>
-
+                  {/* 
                   <div style={{ textAlign: "center", margin: "0 0 10px 0" }}>
                     <Button color="green" onClick={close}>
                       <Link
@@ -135,7 +143,7 @@ export default function Layout({ children }: any) {
                       </Link>
                     </Button>
                   </div>
-
+                  
                   <div style={{ textAlign: "center" }}>
                     <Button className="button block" onClick={handleSignOut}>
                       Cerrar Sesión
@@ -144,6 +152,7 @@ export default function Layout({ children }: any) {
                 </div>
               }
             </Modal>
+
             <Image
               onClick={open}
               maw={40}
@@ -155,6 +164,7 @@ export default function Layout({ children }: any) {
               style={{ float: "right" }}
             />
           </div>
+          */}
         </Header>
       }
       styles={(theme) => ({
