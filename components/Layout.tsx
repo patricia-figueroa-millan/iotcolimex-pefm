@@ -43,7 +43,7 @@ export default function Layout({ children }: any) {
                 </Link>
               </div>
               
-              <Button className="button block" onClick={handleSignOut} style={{position:"absolute", bottom:"0", margin:"0 60px 20px 10px"}}>
+              <Button className="button block" onClick={handleSignOut} style={{position:"absolute", bottom:"0", margin:"0 60px 50px 10px"}}>
                 Cerrar Sesión
               </Button>
               
