@@ -29,17 +29,35 @@ export default function Layout({ children }: any) {
     <AppShell
       padding="md"
       navbar={
-        <Navbar width={{ base: 200 }} height={700} p="xs">
+        <Navbar width={{ base: 165 }} height={700} p="xs" style={{backgroundColor:"white"}}>
           {
             <Box w={240}>
               <div style={{ margin: "0 60px 0 0" }}>
                 <Link href={"/"} style={{ textDecoration: "none" }}>
-                  <NavLink label="DASHBOARD" />
+                  <table>
+                    <tr>
+                      <td>
+                        <Image src="./tablero.png" maw={30} />
+                      </td>
+                      <td>
+                        <NavLink variant="subtle" active label="Tablero"/>
+                      </td>
+                    </tr>
+                  </table>
                 </Link>
               </div>
               <div style={{ margin: "0 60px 0 0" }}>
                 <Link href={"/recharts-test"} style={{ textDecoration: "none" }}>
-                  <NavLink label="GRÁFICAS" />
+                <table>
+                    <tr>
+                      <td>
+                        <Image src="./barras.png" maw={30} />
+                      </td>
+                      <td style={{width:"70%"}}>
+                      <NavLink variant="subtle" active label="Gráficas" />
+                      </td>
+                    </tr>
+                  </table>
                 </Link>
               </div>
               
@@ -114,16 +132,30 @@ export default function Layout({ children }: any) {
         </Navbar>
       }
       header={
-        <Header height={60} p="xs">
+        <Header height={60} p="xs"style={{backgroundColor:"white"}}>
           {/* Header content */}
           <div
             style={{
-              padding: "10px 0 0 30px",
               float: "left",
-              fontSize: "18px",
+              fontSize: "25px",
+              fontWeight:"bold",
+              color:"#228BE6"
             }}
           >
-            <label>MENÚ</label>
+            <table>
+              <tr>
+                <td>
+                <Image src="./menu.png" maw={30} />
+                </td>
+                <td>
+                <label >
+              MENÚ
+              </label>
+                </td>
+              </tr>
+            </table>
+            
+            
           </div>
           {/* 
           <div style={{ float: "right", overflow: "hidden" }}>
@@ -167,14 +199,7 @@ export default function Layout({ children }: any) {
           */}
         </Header>
       }
-      styles={(theme) => ({
-        main: {
-          backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[0],
-        },
-      })}
+    
     >
       {children}
     </AppShell>

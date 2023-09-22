@@ -8,7 +8,7 @@ import {
 import { createClient } from "@supabase/supabase-js";
 // @ts-ignore
 import { Database } from "../utils/database.types";
-import { SimpleGrid, Grid, Title, Image } from "@mantine/core";
+import { SimpleGrid, Grid, Title, Image, Center } from "@mantine/core";
 type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 
 export default function Account({ session }: { session: Session }) {
@@ -63,36 +63,25 @@ export default function Account({ session }: { session: Session }) {
         />
       </div>
       */}
-      <label
-        style={{ display: "block", margin: "30px 0 0 0", fontFamily: "Arial" }}
-      >
-        <Title order={3} fw={500}>
-          Último valor sensado
-        </Title>
-      </label>
-      
-
-
-      <div style={{ padding: "70px 0 0 50px" }}>
+      <div style={{ padding: "5px 0 0 50px" }}>
         
          {/*<SimpleGrid cols={3} spacing="sm"> */}
 
-          <Grid grow gutter="xl">
-          <Grid.Col span={4}>
-          <div>
-          <Title  fz="lg">Temperatura</Title>
+          <Grid  gutter="xs" justify="center" align="stretch">
+
+          <Grid.Col  span={4}>
+          
+          <Title order={2} color="#12486B" style={{marginLeft:"0px"}}>Temperatura</Title>
           <div
             style={{
-              width: "200px",
-              height: "100px",
-              borderStyle: "solid",
-              borderColor: "black",
+              width: "340px",
+              height: "240px",
               textAlign: "center",
-              backgroundColor:"#f07575"
+              backgroundColor:"#E67D22"
             }}
           >
-            <Title order={1}>{meas?.temperature} °C</Title>
-            <Image src="./temp.png" maw={40} mx="auto"/>
+            <Title style={{fontSize:"45px", marginTop:"0px", color:"white"}} order={1}>{meas?.temperature} °C</Title>
+            <Image src="./temperatura.png" maw={95} style={{marginTop:"5px"}} mx="auto"/>
             {/*
             <button onClick={getData}>Click me</button>
              */}
@@ -107,87 +96,81 @@ export default function Account({ session }: { session: Session }) {
             </table>*/}
             {/*<h1>{temp[0]}</h1>*/}
           </div>
-          </div>
+          
           </Grid.Col>
 
           <Grid.Col span={4}>
           <div>
-          <Title  fz="lg">Presión atmosférica</Title>
+          <Title order={2} color="#12486B">Presión atmosférica</Title>
           <div
             style={{
-              width: "250px",
-              height: "100px",
-              borderStyle: "solid",
-              borderColor: "black",
+              width: "340px",
+              height: "240px",
               textAlign: "center",
-              backgroundColor:"#99ebff",
+              backgroundColor:"#86959B",
               marginBottom:"50px"
             }}
           >
-            <Title order={1}>{meas?.atm_pressure} mbar</Title>
-            <Image src="./atm_pressure.png" maw={40} mx="auto"/>
+            <Title order={2} style={{fontSize:"45px", marginTop:"0px", color:"WHITE"}}>{meas?.atm_pressure} mbar</Title>
+            <Image src="./atmosferico.png" maw={95} style={{marginTop:"10px"}} mx="auto"/>
           </div>
           </div>
           </Grid.Col>
 
           <Grid.Col span={4}>
           <div>
-          <Title  fz="lg">Humedad Relativa</Title>
+          <Title  order={2} color="#12486B" >Humedad Relativa</Title>
           <div
             style={{
-              width: "200px",
-              height: "100px",
-              borderStyle: "solid",
-              borderColor: "black",
+              width: "340px",
+              height: "240px",
               textAlign: "center",
-              backgroundColor:"#66a3ff"
+              backgroundColor:"#00A6D6"
             }}
           >
-            <Title order={1}>{meas?.rel_humidity}</Title>
-            <Image src="./humidity.png" maw={40} mx="auto"/>
+            <Title order={2} style={{fontSize:"45px", marginTop:"0px", color:"white"}}>{meas?.rel_humidity} %</Title>
+            <Image src="./humedad.png" maw={95} style={{marginTop:"5px"}} mx="auto"/>
           </div>
           </div>
           </Grid.Col>
 
-          <Grid.Col span={4} offset={2}>
+          <Grid.Col span={4}>
           <div>
-          <Title  fz="lg">Velocidad del viento</Title>
+          <Title  order={2} color="#12486B" >Velocidad del viento</Title>
           <div
             style={{
-              width: "200px",
-              height: "100px",
-              borderStyle: "solid",
-              borderColor: "black",
+              width: "340px",
+              height: "240px",
               textAlign: "center",
-              backgroundColor:"#e6e6e6"
+              backgroundColor:"#73B1B8"
             }}
           >
-            <Title order={1}>{meas?.wind_speed} m/s</Title>
-            <Image src="./wind_speed.png" maw={40} mx="auto"/>
+            <Title  style={{fontSize:"45px", marginTop:"0px", color:"WHITE"}} order={1}>{meas?.wind_speed} m/s</Title>
+            <Image src="./viento.png" maw={95} mx="auto" style={{marginTop:"10px"}}/>
+            <Title order={1} style={{marginTop:"10px", color:"WHITE"}}>Brisa moderada</Title>
           </div>
           </div>
           </Grid.Col>
 
-          <Grid.Col span={4} offset={-2}>
+          <Grid.Col span={4}>
           <div>
-          <Title  fz="lg">Humedad del suelo</Title>
+          <Title  order={2} color="#12486B" >Humedad del suelo</Title>
           <div
             style={{
-              width: "200px",
-              height: "100px",
-              borderStyle: "solid",
-              borderColor: "black",
+              width: "340px",
+              height: "240px",
               textAlign: "center",
-              backgroundColor:"#806040"
+              backgroundColor:"#A77540"
             }}
           >
-            <Title order={1}>{meas?.soil_moisture} %</Title>
-            <Image src="./soil_moisture.png" maw={40} mx="auto"/>
+            <Title style={{fontSize:"45px", marginTop:"0px", color:"white"}} order={1}>{meas?.soil_moisture} %</Title>
+            <Image src="./suelo.png" maw={95} style={{marginTop:"3px"}} mx="auto"/>
           </div>
           </div>
           </Grid.Col>
         {/* </div></div></SimpleGrid>*/}
         </Grid>
+        
       </div>
       <span style={{ padding: "50px" }}> </span>
       
