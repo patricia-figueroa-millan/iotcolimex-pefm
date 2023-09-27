@@ -49,8 +49,88 @@ export default function Account({ session }: { session: Session }) {
     fetchData();
   }, []);
 
+  
+  let tsign
+  let pasign
+  let rhsign
+  let wsign
+  let smsign
 
 
+   
+  if (meas && typeof meas.temperature === "number" && meas.temperature >= 0 && meas.temperature <= 7.00)
+    tsign = "Muy frío";
+  else if (meas && typeof meas.temperature === "number" && meas.temperature >= 7.00 && meas.temperature <= 14.00)
+    tsign = "Fresco";
+  else if (meas && typeof meas.temperature === "number" && meas.temperature >= 14.00 && meas.temperature <= 21.00)
+    tsign = "Templado";
+  else if (meas && typeof meas.temperature === "number" && meas.temperature >= 21.00 && meas.temperature <= 28.00)
+    tsign = "Cálido";
+  else if (meas && typeof meas.temperature === "number" && meas.temperature >= 28.00 && meas.temperature <= 35.00)
+    tsign = "Caliente";
+  else if (meas && typeof meas.temperature === "number" && meas.temperature > 35.00)
+    tsign = "Muy caliente";
+  
+
+
+  if (meas && typeof meas.rel_humidity === "number" && meas.rel_humidity < 50.00 )
+    rhsign = "Baja";
+  else if (meas && typeof meas.rel_humidity === "number" && meas.rel_humidity >= 50.00 && meas.rel_humidity <= 80.00)
+    rhsign = "Alta";
+  else if (meas && typeof meas.rel_humidity === "number" && meas.rel_humidity > 80.00)
+    rhsign = "Muy alta";
+
+
+
+  if (meas && typeof meas.atm_pressure === "number" && meas.atm_pressure < 1009.144 )
+    pasign = "Baja";
+  else if (meas && typeof meas.atm_pressure === "number" && meas.atm_pressure >= 1009.144 && meas.atm_pressure <= 1022.689)
+    pasign = "Normal";
+  else if (meas && typeof meas.atm_pressure === "number" && meas.atm_pressure > 1022.689)
+    pasign = "Alta";
+  
+
+  if (meas && typeof meas.soil_moisture === "number" && meas.soil_moisture < 15.00)
+    smsign = "Muy seco";
+  else if (meas && typeof meas.soil_moisture === "number" && meas.soil_moisture >= 15.00 && meas.soil_moisture < 20.00)
+    smsign = "Seco";
+  else if (meas && typeof meas.soil_moisture === "number" && meas.soil_moisture >= 20.00 && meas.soil_moisture < 25.00)
+    smsign = "Moderado";
+  else if (meas && typeof meas.soil_moisture === "number" && meas.soil_moisture >= 25.00 && meas.soil_moisture < 30.00)
+    smsign = "Mojado";
+  else if (meas && typeof meas.soil_moisture === "number" && meas.soil_moisture >= 30.00)
+    smsign = "Muy mojado";
+
+
+
+  if (meas && typeof meas.wind_speed === "number" && meas.wind_speed < 0.277)
+    wsign = "Muy frío";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 0.277 && meas.wind_speed < 1.666)
+    wsign = "Fresco";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 1.666 && meas.wind_speed < 3.333)
+    wsign = "Templado";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 3.333 && meas.wind_speed < 5.555)
+    wsign = "Cálido";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 5.555 && meas.wind_speed < 8.055)
+    wsign = "Caliente";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 8.055 && meas.wind_speed < 10.833)
+    wsign = "Caliente";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 10.833 && meas.wind_speed < 13.888)
+    wsign = "Caliente";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 13.888 && meas.wind_speed < 17.222)
+    wsign = "Caliente";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 17.222 && meas.wind_speed < 20.833)
+    wsign = "Caliente";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 20.833 && meas.wind_speed < 24.722)
+    wsign = "Caliente";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 24.722 && meas.wind_speed < 28.611)
+    wsign = "Caliente";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 28.611 && meas.wind_speed < 32.5)
+    wsign = "Caliente";
+  else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 32.5)
+    wsign = "Muy caliente"; 
+
+    
   return (
     <div>
       {/*}
@@ -82,6 +162,7 @@ export default function Account({ session }: { session: Session }) {
           >
             <Title style={{fontSize:"45px", marginTop:"0px", color:"white"}} order={1}>{meas?.temperature} °C</Title>
             <Image src="./temperatura.png" maw={95} style={{marginTop:"5px"}} mx="auto"/>
+            <Title order={1} style={{marginTop:"10px", color:"WHITE"}}>{tsign}</Title>
             {/*
             <button onClick={getData}>Click me</button>
              */}
@@ -113,6 +194,7 @@ export default function Account({ session }: { session: Session }) {
           >
             <Title order={2} style={{fontSize:"45px", marginTop:"0px", color:"WHITE"}}>{meas?.atm_pressure} mbar</Title>
             <Image src="./atmosferico.png" maw={95} style={{marginTop:"10px"}} mx="auto"/>
+            <Title order={1} style={{marginTop:"10px", color:"WHITE"}}>{pasign}</Title>
           </div>
           </div>
           </Grid.Col>
@@ -130,6 +212,7 @@ export default function Account({ session }: { session: Session }) {
           >
             <Title order={2} style={{fontSize:"45px", marginTop:"0px", color:"white"}}>{meas?.rel_humidity} %</Title>
             <Image src="./humedad.png" maw={95} style={{marginTop:"5px"}} mx="auto"/>
+            <Title order={1} style={{marginTop:"10px", color:"WHITE"}}>{rhsign}</Title>
           </div>
           </div>
           </Grid.Col>
@@ -147,7 +230,7 @@ export default function Account({ session }: { session: Session }) {
           >
             <Title  style={{fontSize:"45px", marginTop:"0px", color:"WHITE"}} order={1}>{meas?.wind_speed} m/s</Title>
             <Image src="./viento.png" maw={95} mx="auto" style={{marginTop:"10px"}}/>
-            <Title order={1} style={{marginTop:"10px", color:"WHITE"}}>Brisa moderada</Title>
+            <Title order={1} style={{marginTop:"10px", color:"WHITE"}}>{wsign}</Title>
           </div>
           </div>
           </Grid.Col>
@@ -165,6 +248,7 @@ export default function Account({ session }: { session: Session }) {
           >
             <Title style={{fontSize:"45px", marginTop:"0px", color:"white"}} order={1}>{meas?.soil_moisture} %</Title>
             <Image src="./suelo.png" maw={95} style={{marginTop:"3px"}} mx="auto"/>
+            <Title order={1} style={{marginTop:"10px", color:"WHITE"}}>{smsign}</Title>
           </div>
           </div>
           </Grid.Col>

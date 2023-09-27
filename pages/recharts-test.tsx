@@ -14,6 +14,9 @@ import {
 import {useSupabaseClient} from "@supabase/auth-helpers-react";
 // @ts-ignore
 import { Database } from "../utils/database.types";
+
+
+
 export default function ReachartsTest() {
   const supabase = useSupabaseClient<Database>();
   type DataType = {

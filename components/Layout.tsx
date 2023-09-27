@@ -60,7 +60,20 @@ export default function Layout({ children }: any) {
                   </table>
                 </Link>
               </div>
-              
+              <div style={{ margin: "0 60px 0 0" }}>
+                <Link href={"/reports"} style={{ textDecoration: "none" }}>
+                <table>
+                    <tr>
+                      <td>
+                        <Image src="./table.png" maw={30} />
+                      </td>
+                      <td style={{width:"70%"}}>
+                      <NavLink variant="subtle" active label="Reportes" />
+                      </td>
+                    </tr>
+                  </table>
+                </Link>
+              </div>
               <Button className="button block" onClick={handleSignOut} style={{position:"absolute", bottom:"0", margin:"0 60px 50px 10px"}}>
                 Cerrar Sesión
               </Button>
