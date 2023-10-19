@@ -11,13 +11,16 @@ import {
   Label,
   ResponsiveContainer,
 } from "recharts";
-import {useSupabaseClient} from "@supabase/auth-helpers-react";
+import { useSession,useSupabaseClient } from "@supabase/auth-helpers-react";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
 // @ts-ignore
 import { Database } from "../utils/database.types";
 
 
 
 export default function ReachartsTest() {
+  const session = useSession()
   const supabase = useSupabaseClient<Database>();
   type DataType = {
     created_at: Date;
@@ -224,7 +227,27 @@ export default function ReachartsTest() {
 
   return (
     <Fragment>
-      
+      {!session ? (
+        <div
+        style={{
+          margin: "100px auto auto auto",
+          padding: "10px 5px 0 5px",
+          width: "50%",
+          border: "3px solid black",
+        }}
+      >
+        <center>
+          <label style={{ color: "GrayText" }}>INICIO DE SESIÓN</label>
+        </center>
+        <Auth
+          supabaseClient={supabase}
+          appearance={{ theme: ThemeSupa }}
+          providers={[]}
+          theme="dark"
+        />{" "}
+      </div>
+      ):(
+      <Fragment>
       <Title order={1}>Mediciones</Title>
 
       
@@ -391,6 +414,8 @@ export default function ReachartsTest() {
 
       </SimpleGrid>
     </div>
+    </Fragment>
+    )}
     </Fragment>
   );
 }

@@ -1,4 +1,6 @@
-import {useSupabaseClient} from "@supabase/auth-helpers-react";
+import {useSession, useSupabaseClient} from "@supabase/auth-helpers-react";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { Fragment, useEffect, useState, useRef } from "react";
 // @ts-ignore
 import { Database } from "../utils/database.types";
@@ -10,7 +12,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 {/* import { autoTable, RowInput } from 'jspdf-autotable'; */}
 export default function Reports() {
-
+    const session = useSession()
     const supabase = useSupabaseClient<Database>();
     type DataType = {
         id: number;
@@ -197,6 +199,27 @@ export default function Reports() {
 
     return(
     <Fragment>
+      {!session ? (
+        <div
+        style={{
+          margin: "100px auto auto auto",
+          padding: "10px 5px 0 5px",
+          width: "50%",
+          border: "3px solid black",
+        }}
+      >
+        <center>
+          <label style={{ color: "GrayText" }}>INICIO DE SESIÓN</label>
+        </center>
+        <Auth
+          supabaseClient={supabase}
+          appearance={{ theme: ThemeSupa }}
+          providers={[]}
+          theme="dark"
+        />{" "}
+      </div>
+      ):(
+        <Fragment>
         <Title order={1} style={{marginBottom:"20px",textAlign:"center"}}>Datos de la Tabla</Title>
           
         <div id="parent" style={{display:"flex"}}>
@@ -271,6 +294,8 @@ export default function Reports() {
     Descargar PDF
   </Button>
           </div>
+  </Fragment>
+          )}
     </Fragment>
     
     )
