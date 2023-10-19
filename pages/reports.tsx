@@ -31,6 +31,17 @@ export default function Reports() {
         label: string;
     }
     
+    type CSVRow = {
+      Id: number;
+      Fecha: string;
+      Hora: string;
+      Temperatura: number;
+      "Presión Atmosférica": number;
+      "Humedad Relativa": number;
+      "Velocidad Viento": number;
+      "Humedad Suelo": number;
+    };
+
     function DateSelector({ selectedDate, onChange, label }: DateSelectorProps) {
         return (
           <DatePickerInput
@@ -59,7 +70,7 @@ export default function Reports() {
 
     const [startDate, setStartDate] = useState <Date | null>(null)
     const [endDate, setEndDate] = useState<Date | null>(null)
-
+    const [tableLoaded, setTableLoaded] = useState(false)
 
 
     useEffect(() => {
@@ -90,6 +101,7 @@ export default function Reports() {
             });
             // @ts-ignore
         setTableData(formattedData);
+        setTableLoaded(true)
         }
         if (error) {
             console.error('Error al obtener datos de Supabase:', error);
@@ -103,12 +115,12 @@ export default function Reports() {
 
 
 
-    
+    const [csvData, setCSVData] = useState(null)
     {/* FUNCIÓN PARA EXPORTAR A CSV */}
     const handleExportCSV = () => {
         if (tableData.length > 0) {
             console.log("SI HAY DATOS EN LA TABLA")
-            const csvData = tableData.map((item:DataType) => ({
+            const formattedCSVData  = tableData.map((item:DataType) => ({
             Id: item.id,
             Fecha: item.fecha,
             Hora: item.hora,
@@ -119,45 +131,40 @@ export default function Reports() {
             "Humedad Suelo": item.soil_moisture,
           }));
           
-          const csvHeaders = Object.keys(csvData[0]);
+          const csvHeaders = Object.keys(formattedCSVData [0]);
           const csvFileName = "data.csv";
-          const buttonStyle = {
-            color: "white",
-            backgroundColor: "green",
-            // Agrega otros estilos según tus preferencias
-          };
-          return (
-            
-            <CSVLink
-              data={csvData}
-              headers={csvHeaders}
-              filename={csvFileName}
-              style={buttonStyle}
-            >
-              Descargar CSV
-            </CSVLink>
-            
-          );
+          setCSVData(formattedCSVData)
+          // Descargar el archivo CSV
+          const csvBlob = new Blob([csvHeaders.join(",") + "\n" + formattedCSVData.map((row: { [x: string]: any; }) => csvHeaders.map(header => row[header]).join(",")).join("\n")], { type: 'text/csv' });
+          const csvUrl = URL.createObjectURL(csvBlob);
+          const a = document.createElement("a");
+          a.href = csvUrl;
+          a.download = csvFileName;
+          a.click();
         }
         console.log("NO HAY DATOS EN LA TABLA y agregar return null")
       };
 
-
+      
+      
       {/* FUNCIÓN PARA EXPORTAR A PDF */}
       const handleSavePDF = () => {
       if (tableData.length > 0) {
+        console.log("Generando PDF")
+        
         const doc = new jsPDF({
           orientation:'landscape'
         })
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
-        const imageWidth = 50; // Ancho de la imagen en milímetros
-        const imageHeight = 20; // Alto de la imagen en milímetros
+        const imageWidth = 45; // Ancho de la imagen en milímetros
+        const imageHeight = 15; // Alto de la imagen en milímetros
         const imageX = pageWidth - imageWidth - 8; // Posición X de la imagen (derecha)
-        const imageY = 0; // Posición Y de la imagen (arriba)
+        const imageY = 3; // Posición Y de la imagen (arriba)
         doc.setFontSize(16)
-        doc.text('Reporte histórico por periodo', 10, 10,);
-        doc.text('Sistema IoT para Monitorización de Condiciones Climáticas en Cultivos de Limón Mexicano', 10, 17);
+        doc.text('Sistema IoT para Monitorización de Condiciones Climáticas en Cultivos de Limón Mexicano', 10, 10);
+        doc.setFontSize(13)
+        doc.text('Reporte histórico por periodo', 10, 17,);
         const imageUrl = '/COEPLIM.png'
         doc.addImage(imageUrl, 'PNG',  imageX, imageY, imageWidth, imageHeight)
       // Define las columnas y filas de la tabla
@@ -183,18 +190,15 @@ export default function Reports() {
     });
       // Guarda el PDF con un nombre específico
       doc.save('tabla.pdf');
-      return(
-          <Button style={{ color: "white", backgroundColor: "red" }}>
-              Descargar PDF
-          </Button>
-      )
-  }};
+
+  }
+  
+  };
 
     return(
     <Fragment>
         <Title order={1} style={{marginBottom:"20px",textAlign:"center"}}>Datos de la Tabla</Title>
-          {handleExportCSV()  }
-          <Button style={{ color: "white", backgroundColor: "red" }} onClick={handleSavePDF}>Descargar PDF</Button>
+          
         <div id="parent" style={{display:"flex"}}>
             <div id="wide" style={{flex:"1"}}>
             <DateSelector
@@ -240,8 +244,33 @@ export default function Reports() {
                 ))}
                 </tbody>
             </Table>
-
         </div>
+        <div style={{float:"right"}}>
+        {/* 
+        <Button style={{ color: "white", backgroundColor: "green" }} onClick={handleExportCSV}>
+          Descargar CSV
+        </Button>
+
+        <Button style={{ color: "white", backgroundColor: "red" }} onClick={handleSavePDF}>
+          Descargar PDF
+        </Button>
+        */}
+        <Button
+    style={{ color: "white", backgroundColor: "green" }}
+    onClick={handleExportCSV}
+    disabled={!tableLoaded} // Deshabilita el botón si la tabla no se ha cargado
+  >
+    Descargar CSV
+  </Button>
+
+  <Button
+    style={{ color: "white", backgroundColor: "red" }}
+    onClick={handleSavePDF}
+    disabled={!tableLoaded} // Deshabilita el botón si la tabla no se ha cargado
+  >
+    Descargar PDF
+  </Button>
+          </div>
     </Fragment>
     
     )
