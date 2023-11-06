@@ -27,9 +27,12 @@ export default function Account({ session }: { session: Session }) {
   const [avatar_url, setAvatarUrl] = useState<Profiles["avatar_url"]>(null);
 
   useEffect(() => {
-    getProfile();
   }, [session]);
 
+  {/* useEffect(() => {
+    getProfile();
+  }, [session]); */}
+  {/* 
   async function getProfile() {
     try {
       setLoading(true);
@@ -57,7 +60,7 @@ export default function Account({ session }: { session: Session }) {
       setLoading(false);
     }
   }
-
+*/}
   async function updateProfile({
     username,
     website,
