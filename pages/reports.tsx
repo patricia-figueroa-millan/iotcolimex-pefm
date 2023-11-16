@@ -167,7 +167,7 @@ export default function Reports() {
         doc.text('Sistema IoT para Monitorización de Condiciones Climáticas en Cultivos de Limón Mexicano', 10, 10);
         doc.setFontSize(13)
         doc.text('Reporte histórico por periodo', 10, 17,);
-        const imageUrl = '/COEPLIM.PNG'
+        const imageUrl = '/coeplim.png'
         doc.addImage(imageUrl, 'PNG',  imageX, imageY, imageWidth, imageHeight)
       // Define las columnas y filas de la tabla
       const columns = ["Id", "Fecha", "Hora", "Temperatura", "Presión Atmosférica", "Humedad Relativa", "Velocidad Viento", "Humedad Suelo"];
