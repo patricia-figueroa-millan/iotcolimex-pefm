@@ -7,7 +7,7 @@ import { Database } from "../utils/database.types";
 import { Title, Table, Button } from "@mantine/core";
 import { DatePickerInput } from '@mantine/dates'
 import { format} from 'date-fns'
-import { CSVLink, CSVDownload } from "react-csv";
+// import { CSVLink, CSVDownload } from "react-csv";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 {/* import { autoTable, RowInput } from 'jspdf-autotable'; */}
@@ -167,7 +167,7 @@ export default function Reports() {
         doc.text('Sistema IoT para Monitorización de Condiciones Climáticas en Cultivos de Limón Mexicano', 10, 10);
         doc.setFontSize(13)
         doc.text('Reporte histórico por periodo', 10, 17,);
-        const imageUrl = '/COEPLIM.png'
+        const imageUrl = '/COEPLIM.PNG'
         doc.addImage(imageUrl, 'PNG',  imageX, imageY, imageWidth, imageHeight)
       // Define las columnas y filas de la tabla
       const columns = ["Id", "Fecha", "Hora", "Temperatura", "Presión Atmosférica", "Humedad Relativa", "Velocidad Viento", "Humedad Suelo"];
