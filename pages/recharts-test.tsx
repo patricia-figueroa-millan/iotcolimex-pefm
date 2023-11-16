@@ -1,5 +1,6 @@
 import { Title, Grid, SimpleGrid } from "@mantine/core";
 import { Fragment, useEffect, useState } from "react";
+import { format, subDays } from 'date-fns'
 import {
   BarChart,
   Bar,
@@ -16,7 +17,7 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 // @ts-ignore
 import { Database } from "../utils/database.types";
-
+import { DatePickerInput } from '@mantine/dates'
 
 
 export default function ReachartsTest() {
@@ -34,6 +35,9 @@ export default function ReachartsTest() {
 
   // Definimos la fecha actual
   const currentDate = new Date()
+  // Calcula el día anterior al actual
+  const defaultDate = subDays(currentDate, 1)
+
   const time1 = new Date(
     currentDate.getFullYear(), 
     currentDate.getMonth(), 
@@ -81,6 +85,7 @@ export default function ReachartsTest() {
   console.log("Fecha a las 14 hrs: ", timeB.toISOString())
   console.log("Fecha a las 20 hrs: ", timeC.toISOString())
   */}
+  
   useEffect(() => {
     const fetchData = async () => {
       let response = await supabase
@@ -88,6 +93,7 @@ export default function ReachartsTest() {
         .select(
           "created_at, temperature, atm_pressure, rel_humidity, wind_speed, soil_moisture"
         )
+        
         .gte("created_at", time1.toISOString())
         .lte("created_at", time2.toISOString())
       // @ts-ignore
@@ -209,6 +215,26 @@ export default function ReachartsTest() {
   console.log("FECHA ACTUAL:", fechaFormateada)
 
 
+  const [startDate, setStartDate] = useState <Date | null>(null)
+  const [endDate, setEndDate] = useState<Date | null>(null)
+
+  interface DateSelectorProps {
+    selectedDate: Date | null;
+    onChange: (date: Date | null) => void;
+    label: string;
+}
+
+  function DateSelector({ selectedDate, onChange, label }: DateSelectorProps) {
+    return (
+      <DatePickerInput
+        value={selectedDate}
+        onChange={onChange}
+        label={label}
+        placeholder="Selecciona una fecha"
+        valueFormat="DD MMM YYYY" // Formato de fecha deseado
+      />
+    );
+  }
 
 
 
@@ -248,9 +274,19 @@ export default function ReachartsTest() {
       </div>
       ):(
       <Fragment>
-      <Title order={1}>Mediciones</Title>
+      <Title order={1}>Seleccionar día para mostrar variables microclimáticas</Title>
 
-      
+      <div id="parent" style={{display:"flex"}}>
+            <div id="wide" style={{flex:"1"}}>
+            <DateSelector
+                selectedDate={startDate}
+                onChange={(date) => setStartDate(date)}
+                label="Fecha"
+            />
+            </div>
+            
+        </div>
+
       <div style={{margin:"10px 0 0 0"}}>
       <SimpleGrid cols={2}>
 
