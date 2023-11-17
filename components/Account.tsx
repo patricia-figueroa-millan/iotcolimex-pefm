@@ -178,31 +178,31 @@ export default function Account({ session }: { session: Session }) {
 
 
   if (meas && typeof meas.wind_speed === "number" && meas.wind_speed < 0.277)
-    wsign = "Muy frío";
+    wsign = "Calmado";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 0.277 && meas.wind_speed < 1.666)
-    wsign = "Fresco";
+    wsign = "Aire ligero";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 1.666 && meas.wind_speed < 3.333)
-    wsign = "Templado";
+    wsign = "Brisa Ligera";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 3.333 && meas.wind_speed < 5.555)
-    wsign = "Cálido";
+    wsign = "Brisa suave";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 5.555 && meas.wind_speed < 8.055)
-    wsign = "Caliente";
+    wsign = "Brisa moderada";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 8.055 && meas.wind_speed < 10.833)
-    wsign = "Caliente";
+    wsign = "Brisa fresca";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 10.833 && meas.wind_speed < 13.888)
-    wsign = "Caliente";
+    wsign = "Brisa fuerte";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 13.888 && meas.wind_speed < 17.222)
-    wsign = "Caliente";
+    wsign = "Viento moderado";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 17.222 && meas.wind_speed < 20.833)
-    wsign = "Caliente";
+    wsign = "Viento fresco";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 20.833 && meas.wind_speed < 24.722)
-    wsign = "Caliente";
+    wsign = "Viento fuerte";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 24.722 && meas.wind_speed < 28.611)
-    wsign = "Caliente";
+    wsign = "Viento muy fuerte";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 28.611 && meas.wind_speed < 32.5)
-    wsign = "Caliente";
+    wsign = "Tormenta";
   else if (meas && typeof meas.wind_speed === "number" && meas.wind_speed >= 32.5)
-    wsign = "Muy caliente"; 
+    wsign = "Huracán"; 
 
     
   return (
