@@ -122,9 +122,9 @@ export default function Reports() {
     const handleExportCSV = () => {
         if (tableData.length > 0) {
             console.log("SI HAY DATOS EN LA TABLA")
-            const formattedCSVData  = tableData.map((item:DataType) => ({
+            const formattedCSVData = tableData.map((item:DataType) => ({
             Id: item.id,
-            Fecha: item.fecha,
+            Fecha: `"${item.fecha}"`,
             Hora: item.hora,
             Temperatura: item.temperature,
             "Presión Atmosférica": item.atm_pressure,
