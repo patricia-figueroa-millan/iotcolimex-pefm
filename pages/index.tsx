@@ -20,7 +20,7 @@ const Home = () => {
           }}
         >
           <center>
-            <label style={{ color: "GrayText" }}>INICIO DE SESIÓN</label>
+            <label style={{ color: "red" }}>INICIO DE SESIÓN</label>
           </center>
           <Auth
             supabaseClient={supabase}
