@@ -1,220 +1,265 @@
-import { Button, AppShell, Navbar, Header, Image, Modal } from "@mantine/core";
-import Link from "next/link";
-// @ts-ignore
-import { Database } from "../utils/database.types";
-import { Box, NavLink } from "@mantine/core";
+import {
+  AppShell,
+  Navbar,
+  Header,
+  Image,
+  NavLink,
+  Box,
+  Button,
+  ActionIcon,
+  useMantineTheme,
+} from "@mantine/core";
 import { useSupabaseClient, useSession } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
-import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
+import { IconSun, IconMoon } from "@tabler/icons-react";
+import Link from "next/link";
+// import ModalComponent from "../components/ModalComponent"; // Comentado: Importación de ModalComponent
+// import PortalComponent from "./PortalComponent"; // Comentado: Importación de PortalComponent
+// import { useAlerts } from "@/context/AlertsContext"; // Comentado: Uso del contexto de alertas
+// import type { Alert } from "@/context/AlertsContext"; // Comentado: Tipo Alert relacionado con alertas
 
 export default function Layout({ children }: any) {
   const router = useRouter();
   const session = useSession();
-  const supabase = useSupabaseClient<Database>();
-  const [opened, { open, close }] = useDisclosure(false);
+  const supabase = useSupabaseClient();
+  const theme = useMantineTheme();
+  const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Estados y funciones relacionadas con las notificaciones automáticas
+  // const { alerts, toggleAutoNotify, autoNotify } = useAlerts(); // Comentado: Uso del contexto de alertas
+  // const [activeNotification, setActiveNotification] = useState<Alert | null>(null); // Comentado
+  // const [showNotification, setShowNotification] = useState(false); // Comentado
 
   async function handleSignOut() {
-    // Terminate the session with Supabase
     await supabase.auth.signOut();
-
-    // Redirect to /
     router.push("/");
   }
 
-  // We want to return empty Layout when no session is set, i.e. when in login page
+  // Comentado: Manejar notificaciones automáticas
+  // useEffect(() => {
+  //   if (autoNotify) {
+  //     const interval = setInterval(() => {
+  //       if (alerts.length > 0) {
+  //         const randomIndex = Math.floor(Math.random() * alerts.length);
+  //         const randomAlert = alerts[randomIndex];
+  //         setActiveNotification(randomAlert);
+  //         setShowNotification(true);
+  //         setTimeout(() => setShowNotification(false), 5000);
+  //       }
+  //     }, Math.random() * (15000 - 5000) + 5000);
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [autoNotify, alerts]);
+
   if (!session) return <>{children}</>;
 
-  // Return the Layout if the session is set
+  const navLinks = [
+    { label: "Tablero", href: "/", icon: "./tablero.png" },
+    { label: "Gráficas", href: "/recharts-test", icon: "./barras.png" },
+    { label: "Reportes", href: "/reports", icon: "./table.png" },
+    { label: "Alertas", href: "/alerts", icon: "./alerta.png" },
+  ];
+
   return (
-    <AppShell
-      padding="md"
-      navbar={
-        <Navbar width={{ base: 165 }} height={700} p="xs" style={{backgroundColor:"white"}}>
-          {
-            <Box w={240}>
-              <div style={{ margin: "0 60px 0 0" }}>
-                <Link href={"/"} style={{ textDecoration: "none" }}>
-                  <table>
-                    <tr>
-                      <td>
-                        <Image src="./tablero.png" maw={30} />
-                      </td>
-                      <td>
-                        <NavLink variant="subtle" active label="Tablero"/>
-                      </td>
-                    </tr>
-                  </table>
-                </Link>
-              </div>
-              <div style={{ margin: "0 60px 0 0" }}>
-                <Link href={"/recharts-test"} style={{ textDecoration: "none" }}>
-                <table>
-                    <tr>
-                      <td>
-                        <Image src="./barras.png" maw={30} />
-                      </td>
-                      <td style={{width:"70%"}}>
-                      <NavLink variant="subtle" active label="Gráficas" />
-                      </td>
-                    </tr>
-                  </table>
-                </Link>
-              </div>
-              <div style={{ margin: "0 60px 0 0" }}>
-                <Link href={"/reports"} style={{ textDecoration: "none" }}>
-                <table>
-                    <tr>
-                      <td>
-                        <Image src="./table.png" maw={30} />
-                      </td>
-                      <td style={{width:"70%"}}>
-                      <NavLink variant="subtle" active label="Reportes" />
-                      </td>
-                    </tr>
-                  </table>
-                </Link>
-              </div>
-              <Button className="button block" onClick={handleSignOut} style={{position:"absolute", bottom:"0", margin:"0 60px 50px 10px"}}>
-                Cerrar Sesión
-              </Button>
-              
+    <>
+      {/* Comentado: Agregar ModalComponent para notificaciones */}
+      {/* <ModalComponent /> */}
 
-              {/*
-              <div style={{ margin: "0 60px 0 0" }}>
-                <NavLink label="REPORTES" childrenOffset={28}>
-                  <div style={{ margin: "0 60px 0 0" }}>
-                    <Link
-                      href={"/reportes_graficos"}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <NavLink label="GRÁFICOS" />
-                    </Link>
-                  </div>
-                  <div style={{ margin: "0 60px 0 0" }}>
-                    <Link
-                      href={"/reportes_tabular"}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <NavLink label="TABULAR" />
-                    </Link>
-                  </div>
-                </NavLink>
-              </div>
+      {/* Comentado: Notificación automática */}
+      {/* {activeNotification && showNotification && (
+        <Notification
+          title={`Nueva alerta: ${activeNotification.alert_id}`}
+          color="red"
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+            zIndex: 1000,
+            transform: showNotification ? "translateY(0)" : "translateY(100px)",
+            transition: "transform 0.3s ease",
+          }}
+          onClose={() => setShowNotification(false)}
+        >
+          {activeNotification.description}
+        </Notification>
+      )} */}
 
-              
-              <div style={{ margin: "0 60px 0 0" }}>
-                <Link
-                  href={"/registro_usuarios"}
-                  style={{ textDecoration: "none" }}
-                >
-                  <NavLink label="REGISTRO USUARIOS" />
-                </Link>
-              </div>
-              <div style={{ margin: "0 60px 0 0" }}>
-                <Link
-                  href={"/listar_usuarios"}
-                  style={{ textDecoration: "none" }}
-                >
-                  <NavLink label="LISTAR USUARIOS" />
-                </Link>
-              </div>
-              <div style={{ margin: "0 60px 0 0" }}>
-                <Link
-                  href={"/registro_nodos"}
-                  style={{ textDecoration: "none" }}
-                >
-                  <NavLink label="REGISTRO NODOS" />
-                </Link>
-              </div>
-              <div style={{ margin: "0 60px 0 0" }}>
-                <Link
-                  href={"/consulta_nodos"}
-                  style={{ textDecoration: "none" }}
-                >
-                  <NavLink label="CONSULTA NODOS" />
-                </Link>
-              </div>
-              */}
-            </Box>
-          }
-          {/*
-          <Button className="button block" onClick={handleSignOut}>
-            Sign Out
-          </Button>
-          */}
-        </Navbar>
-      }
-      header={
-        <Header height={60} p="xs"style={{backgroundColor:"white"}}>
-          {/* Header content */}
-          <div
+      <AppShell
+        padding="md"
+        styles={{
+          main: {
+            backgroundColor: darkMode
+              ? theme.colors.dark[8]
+              : theme.colors.gray[0],
+            transition: "background-color 0.3s ease",
+          },
+        }}
+        navbar={
+          <Navbar
+            width={{ base: isMenuCollapsed ? 60 : 200 }}
+            p="xs"
             style={{
-              float: "left",
-              fontSize: "25px",
-              fontWeight:"bold",
-              color:"#228BE6"
+              backgroundColor: darkMode ? theme.colors.dark[7] : "white",
+              transition: "width 0.3s ease, background-color 0.3s ease",
             }}
           >
-            <table>
-              <tr>
-                <td>
-                <Image src="./menu.png" maw={30} />
-                </td>
-                <td>
-                <label >
-              MENÚ
-              </label>
-                </td>
-              </tr>
-            </table>
-            
-            
-          </div>
-          {/* 
-          <div style={{ float: "right", overflow: "hidden" }}>
-            <Modal opened={opened} onClose={close} title="Cuenta" centered>
-              {
-                <div>
-                  <div style={{ textAlign: "center", margin: "0 0 10px 0" }}>
-                  </div>
-                  {/* 
-                  <div style={{ textAlign: "center", margin: "0 0 10px 0" }}>
-                    <Button color="green" onClick={close}>
-                      <Link
-                        href={"/cuenta_usuario"}
-                        style={{ color: "white", textDecoration: "none" }}
-                      >
-                        Gestionar cuenta
-                      </Link>
-                    </Button>
-                  </div>
-                  
-                  <div style={{ textAlign: "center" }}>
-                    <Button className="button block" onClick={handleSignOut}>
-                      Cerrar Sesión
-                    </Button>
-                  </div>
-                </div>
-              }
-            </Modal>
+            <Box>
+              <div style={{ textAlign: "right", marginBottom: "1rem" }}>
+                <Button
+                  variant="light"
+                  size="xs"
+                  onClick={() => setIsMenuCollapsed(!isMenuCollapsed)}
+                  style={{
+                    backgroundColor: "#228BE6",
+                    color: "white",
+                    padding: "5px 10px",
+                    borderRadius: "5px",
+                  }}
+                >
+                  {isMenuCollapsed ? "➔" : "➖"}
+                </Button>
+              </div>
 
-            <Image
-              onClick={open}
-              maw={40}
-              fit="contain"
-              mx="auto"
-              radius="md"
-              src="./profile-user.png"
-              alt="profile image"
-              style={{ float: "right" }}
-            />
-          </div>
-          */}
-        </Header>
-      }
-    
-    >
-      {children}
-    </AppShell>
+              {navLinks.map((link) => (
+                <Link
+                  href={link.href}
+                  key={link.label}
+                  passHref
+                  style={{ textDecoration: "none" }}
+                >
+                  <div
+                    style={{
+                      margin: "10px 0",
+                      backgroundColor:
+                        router.pathname === link.href
+                          ? darkMode
+                            ? theme.colors.dark[6]
+                            : "#E0F7FA"
+                          : "transparent",
+                      borderRadius: "8px",
+                      padding: "5px 10px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    <Image
+                      src={link.icon}
+                      maw={30}
+                      style={{
+                        marginRight: isMenuCollapsed ? "0px" : "10px",
+                        transition: "margin-right 0.3s ease",
+                      }}
+                    />
+                    {!isMenuCollapsed && (
+                      <NavLink
+                        label={link.label}
+                        active={router.pathname === link.href}
+                        variant="subtle"
+                        style={{
+                          color: router.pathname === link.href
+                            ? "#0288D1"
+                            : darkMode
+                            ? "#E0E0E0"
+                            : "#333",
+                          fontWeight: router.pathname === link.href
+                            ? "bold"
+                            : "normal",
+                        }}
+                      />
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </Box>
+
+            {/* Comentado: Botón de activar/desactivar notificaciones automáticas */}
+            {/* <Button
+              variant="subtle"
+              size="xs"
+              onClick={toggleAutoNotify}
+              leftIcon={
+                autoNotify ? <IconBellOff size={16} /> : <IconBell size={16} />
+              }
+              style={{
+                marginTop: "10px",
+                backgroundColor: autoNotify ? "#ffcccb" : "#ccffcc",
+                color: "black",
+              }}
+            >
+              {autoNotify
+                ? "Desactivar notificaciones"
+                : "Activar notificaciones"}
+            </Button> */}
+
+            <Button
+              className="button block"
+              onClick={handleSignOut}
+              style={{
+                marginTop: "auto",
+                backgroundColor: "#F44336",
+                color: "white",
+                borderRadius: "5px",
+                transition: "background-color 0.3s ease",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#D32F2F")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#F44336")
+              }
+            >
+              Cerrar Sesión
+            </Button>
+          </Navbar>
+        }
+        header={
+          <Header
+            height={60}
+            p="xs"
+            style={{
+              backgroundColor: darkMode ? theme.colors.dark[7] : "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              transition: "background-color 0.3s ease",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "25px",
+                fontWeight: "bold",
+                color: darkMode ? "#E0E0E0" : "#0288D1",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                src="./principalicon.jpg"
+                maw={30}
+                style={{ marginRight: "10px" }}
+              />
+              IoTColimex
+            </div>
+            <ActionIcon
+              variant="light"
+              size="lg"
+              onClick={() => setDarkMode(!darkMode)}
+              style={{
+                color: darkMode ? "#FFD700" : "#0288D1",
+                transition: "color 0.3s ease",
+              }}
+            >
+              {darkMode ? <IconSun size={24} /> : <IconMoon size={24} />}
+            </ActionIcon>
+          </Header>
+        }
+      >
+        {children}
+      </AppShell>
+    </>
   );
 }
