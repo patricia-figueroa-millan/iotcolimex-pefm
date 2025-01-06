@@ -14,10 +14,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { IconSun, IconMoon } from "@tabler/icons-react";
 import Link from "next/link";
-// import ModalComponent from "../components/ModalComponent"; // Comentado: Importación de ModalComponent
-// import PortalComponent from "./PortalComponent"; // Comentado: Importación de PortalComponent
-// import { useAlerts } from "@/context/AlertsContext"; // Comentado: Uso del contexto de alertas
-// import type { Alert } from "@/context/AlertsContext"; // Comentado: Tipo Alert relacionado con alertas
 
 export default function Layout({ children }: any) {
   const router = useRouter();
@@ -27,65 +23,23 @@ export default function Layout({ children }: any) {
   const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
-  // Estados y funciones relacionadas con las notificaciones automáticas
-  // const { alerts, toggleAutoNotify, autoNotify } = useAlerts(); // Comentado: Uso del contexto de alertas
-  // const [activeNotification, setActiveNotification] = useState<Alert | null>(null); // Comentado
-  // const [showNotification, setShowNotification] = useState(false); // Comentado
-
   async function handleSignOut() {
     await supabase.auth.signOut();
     router.push("/");
   }
-
-  // Comentado: Manejar notificaciones automáticas
-  // useEffect(() => {
-  //   if (autoNotify) {
-  //     const interval = setInterval(() => {
-  //       if (alerts.length > 0) {
-  //         const randomIndex = Math.floor(Math.random() * alerts.length);
-  //         const randomAlert = alerts[randomIndex];
-  //         setActiveNotification(randomAlert);
-  //         setShowNotification(true);
-  //         setTimeout(() => setShowNotification(false), 5000);
-  //       }
-  //     }, Math.random() * (15000 - 5000) + 5000);
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [autoNotify, alerts]);
-
-  if (!session) return <>{children}</>;
 
   const navLinks = [
     { label: "Tablero", href: "/", icon: "./tablero.png" },
     { label: "Gráficas", href: "/recharts-test", icon: "./barras.png" },
     { label: "Reportes", href: "/reports", icon: "./table.png" },
     { label: "Alertas", href: "/alerts", icon: "./alerta.png" },
+    { label: "Análisis", href: "/analysis", icon: "./analysis.png" },
   ];
+
+  if (!session) return <>{children}</>;
 
   return (
     <>
-      {/* Comentado: Agregar ModalComponent para notificaciones */}
-      {/* <ModalComponent /> */}
-
-      {/* Comentado: Notificación automática */}
-      {/* {activeNotification && showNotification && (
-        <Notification
-          title={`Nueva alerta: ${activeNotification.alert_id}`}
-          color="red"
-          style={{
-            position: "fixed",
-            bottom: "20px",
-            right: "20px",
-            zIndex: 1000,
-            transform: showNotification ? "translateY(0)" : "translateY(100px)",
-            transition: "transform 0.3s ease",
-          }}
-          onClose={() => setShowNotification(false)}
-        >
-          {activeNotification.description}
-        </Notification>
-      )} */}
-
       <AppShell
         padding="md"
         styles={{
@@ -175,25 +129,6 @@ export default function Layout({ children }: any) {
                 </Link>
               ))}
             </Box>
-
-            {/* Comentado: Botón de activar/desactivar notificaciones automáticas */}
-            {/* <Button
-              variant="subtle"
-              size="xs"
-              onClick={toggleAutoNotify}
-              leftIcon={
-                autoNotify ? <IconBellOff size={16} /> : <IconBell size={16} />
-              }
-              style={{
-                marginTop: "10px",
-                backgroundColor: autoNotify ? "#ffcccb" : "#ccffcc",
-                color: "black",
-              }}
-            >
-              {autoNotify
-                ? "Desactivar notificaciones"
-                : "Activar notificaciones"}
-            </Button> */}
 
             <Button
               className="button block"
