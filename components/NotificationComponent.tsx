@@ -1,77 +1,78 @@
 import { useState, useEffect } from "react";
 import { Notification } from "@mantine/core";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { connect, MqttClient } from "mqtt";
+import { showNotification } from "@mantine/notifications";
 
-// Definición de la interfaz para las alertas
 interface Alert {
-  alert_id: string;
-  alert_type: number;
-  description: string;
-  created_at: string;
+  created_at: Date;
+  device_id: string;
+  device_name: string;
+  temperature: number;
+  atm_pressure: number;
+  rel_humidity: number;
+  wind_speed: number;
+  soil_moisture: number;
 }
 
 const AutoNotification = () => {
-  const supabase = useSupabaseClient();
-  const [alerts, setAlerts] = useState<Alert[]>([]); // Estado para almacenar las alertas
   const [activeNotifications, setActiveNotifications] = useState<Alert[]>([]); // Estado para las notificaciones activas
+  const broker_url = process.env.NEXT_PUBLIC_BROKER_URI as string;
+  const topic = process.env.NEXT_PUBLIC_MQTT_TOPIC as string;
 
   useEffect(() => {
-    // Función para obtener las alertas desde Supabase
-    const fetchAlerts = async () => {
-      const { data, error } = await supabase.from("alerta").select("*");
-      if (error) {
-        console.error("Error al obtener alertas:", error);
-      } else if (data) {
-        setAlerts(data);
+    // Conexión al broker MQTT
+    const client: MqttClient = connect(broker_url, {
+      clientId: `web_client_${Math.random().toString(16).substring(2, 8)}`,
+    });
+
+    client.on("connect", () => {
+      console.log("Conectado al broker MQTT");
+      client.subscribe(topic, (err) => {
+        if (err) {
+          console.error("Error al suscribirse al tópico:", err);
+        } else {
+          console.log(`Suscrito al tópico: ${topic}`);
+        }
+      });
+    });
+
+    // Escuchar mensajes del tópico
+    client.on("message", (topic, message) => {
+      try {
+        const data = JSON.parse(message.toString()); // Deserializar JSON
+        const parsedMessage: Alert = {
+          created_at: data.H, // Agregar timestamp de recepción
+          device_id: data.ID, // ID del dispositivo
+          device_name: data.N,
+          temperature: data.T,
+          atm_pressure: data.P,
+          rel_humidity: data.HR,
+          wind_speed: data.V,
+          soil_moisture: data.HS,
+        };
+
+        console.log("Mensaje recibido:", parsedMessage);
+
+        // Agregar la notificación al estado
+        setActiveNotifications((prevNotifications) => [...prevNotifications, parsedMessage]);
+
+        // Mostrar notificación
+        showNotification({
+          title: `Nueva notificación: ${data.device_name}`,
+          message: `Dispositivo: ${data.temperature}, Temperatura: ${data.rel_humidity}`,
+          color: "blue",
+        });
+      } catch (error) {
+        console.error("Error al procesar el mensaje:", error);
       }
+    });
+
+    return () => {
+      client.end();
     };
+  }, [broker_url, topic]);
 
-    fetchAlerts(); // Llamada inicial para obtener las alertas
-
-    // Intervalo para mostrar una notificación aleatoria cada 15 segundos
-    const interval = setInterval(() => {
-      if (alerts.length > 0) {
-        const randomIndex = Math.floor(Math.random() * alerts.length);
-        const newAlert = alerts[randomIndex];
-        setActiveNotifications((prev) => [...prev, newAlert]);
-
-        // Configurar un temporizador para eliminar la notificación después de 15 segundos
-        setTimeout(() => {
-          setActiveNotifications((prev) =>
-            prev.filter((alert) => alert.alert_id !== newAlert.alert_id)
-          );
-        }, 15000);
-      }
-    }, 15000);
-
-    return () => clearInterval(interval); // Limpiar el intervalo al desmontar el componente
-  }, [alerts.length, supabase]); // Dependencias del useEffect
-
-  return (
-    <>
-      {activeNotifications.map((notification, index) => (
-        <Notification
-          key={index}
-          title={`Alerta: ${notification.alert_id}`}
-          color="red"
-          onClose={() =>
-            setActiveNotifications((prev) =>
-              prev.filter((_, i) => i !== index)
-            )
-          }
-          style={{
-            position: "fixed",
-            bottom: `${20 + index * 70}px`, // Ajusta la posición para apilar las notificaciones
-            right: "20px",
-            zIndex: 1000,
-            width: "300px", // Ajusta el tamaño de las notificaciones
-          }}
-        >
-          {notification.description}
-        </Notification>
-      ))}
-    </>
-  );
+  return null; // Este componente no renderiza nada
 };
 
 export default AutoNotification;
