@@ -50,7 +50,6 @@ export default function Reports() {
             value={selectedDate}
             onChange={onChange}
             label={label}
-            placeholder="Selecciona una fecha"
             valueFormat="DD MMM YYYY" // Formato de fecha deseado
           />
         );

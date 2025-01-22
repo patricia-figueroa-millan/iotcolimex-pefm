@@ -175,7 +175,6 @@ export default function ReachartsTest() {
           setSelectedDate(date)
         }}
         label={label}
-        placeholder="Selecciona una fecha"
         valueFormat="DD MMM YYYY" // Formato de fecha deseado
         labelProps={{ style: { fontSize: '18px' } }} // Ajusta el tamaño de la fuente de la etiqueta
       />
