@@ -1,14 +1,6 @@
 import React from "react";
 import { Modal, Title, Text, Badge, Button } from "@mantine/core";
-
-interface Alert {
-  id: string;
-  device_id: string;
-  alert_id: string;
-  alert_type: number;
-  description: string;
-  created_at: string;
-}
+import { Alert, getAlertIdDescription, getAlertTypeLabel } from "../context/types"; // Importa el archivo types.ts
 
 interface ModalComponentProps {
   alert: Alert;
@@ -16,16 +8,21 @@ interface ModalComponentProps {
   onClose: () => void;
 }
 
-const getBadgeColor = (alertType: string) => {
+// Obtener el color de la insignia basado en el tipo de alerta
+const getBadgeColor = (alertType: number) => {
   switch (alertType) {
-    case "1":
-      return "red";
-    case "2":
-      return "yellow";
-    case "3":
-      return "green";
-    default:
+    case 1: // Temperatura
+      return "orange";
+    case 2: // Presión atmosférica
       return "gray";
+    case 3: // Humedad relativa
+      return "blue";
+    case 4: // Velocidad del viento
+      return "aquamarine";
+    case 5: // Humedad del suelo
+      return "brown";
+    default:
+      return "yellow"; // Para valores desconocidos
   }
 };
 
@@ -48,12 +45,13 @@ const ModalComponent: React.FC<ModalComponentProps> = ({ alert, isOpen, onClose 
           <strong>ID Estación:</strong> {alert.device_id}
         </Text>
         <Text style={{ marginBottom: "8px" }}>
-          <strong>ID Alerta:</strong> {alert.alert_id}
+          <strong>Descripción del Tipo de Alerta:</strong>{" "}
+          {getAlertIdDescription(alert.alert_id)}
         </Text>
         <Text style={{ marginBottom: "8px" }}>
-          <strong>Categoría:</strong>{" "}
-          <Badge color={getBadgeColor(String(alert.alert_type))} size="lg">
-            {alert.alert_type}
+          <strong>Variable:</strong>{" "}
+          <Badge color={getBadgeColor(alert.alert_type)} size="lg">
+            {getAlertTypeLabel(alert.alert_type)}
           </Badge>
         </Text>
         <Text style={{ marginBottom: "8px" }}>

@@ -5,17 +5,20 @@ import {
     TextInput,
     ActionIcon,
     Pagination,
+    Card,
+    Group,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IconFilter } from "@tabler/icons-react";
 // @ts-ignore
 import { Database } from "../utils/database.types";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { AlertId, getAlertIdDescription, getAlertTypeLabel } from "../context/types";
 
-type Alert = {
+type LocalAlert = {
     id: number;
     device_id: string;
-    alert_id: string;
+    alert_id: number;
     alert_type: number;
     description: string;
     created_at: string;
@@ -23,9 +26,11 @@ type Alert = {
 
 export default function AlertsPage() {
     const supabase = useSupabaseClient<Database>();
-    const [alerts, setAlerts] = useState<Alert[]>([]);
+    const [alerts, setAlerts] = useState<LocalAlert[]>([]);
     const [loading, setLoading] = useState(true);
     const [filterDate, setFilterDate] = useState("");
+    const [activePage, setActivePage] = useState(1); // Página activa
+    const rowsPerPage = 10; // Número de filas por página
 
     const fetchAlerts = async () => {
         setLoading(true);
@@ -35,7 +40,7 @@ export default function AlertsPage() {
             .order("created_at", { ascending: false });
 
         if (error) console.error("Error fetching alerts:", error);
-        else setAlerts(data as Alert[]);
+        else setAlerts(data as LocalAlert[]);
 
         setLoading(false);
     };
@@ -45,29 +50,39 @@ export default function AlertsPage() {
     }, []);
 
     const getBadgeProps = (type: number) => {
-        switch (type) {
-            case 1:
-                return { color: "yellow", label: "Valor atípico" };
-            case 2:
-                return { color: "orange", label: "Valor fuera de rango" };
-            case 3:
-                return { color: "red", label: "Falla de comunicación" };
-            default:
-                return { color: "gray", label: "Desconocido" };
-        }
+        return {
+            label: getAlertTypeLabel(type),
+            color: type === 1 ? "orange" : type === 2 ? "gray" : type === 3 ? "blue" : type === 4 ? "aquamarine" : type === 5 ? "brown" : "yellow",
+        };
     };
+
+    const getAlertIdLabel = (alertId: AlertId) => {
+        return getAlertIdDescription(alertId);
+    };
+
+    // Calcular el rango de alertas para la página activa
+    const startIndex = (activePage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
 
     return (
         <div style={{ padding: "20px" }}>
-            <Title order={2} mb="lg">
-                Histórico de alertas lanzadas
-            </Title>
+            <Group position="apart">
+                <Title order={2} mb="lg">
+                    Histórico de alertas lanzadas
+                </Title>
+                <Card shadow="sm" padding="lg" radius="md" style={{ maxWidth: 300 }}>
+                    <Title order={5}>Leyenda</Title>
+                    <Badge color="orange">Valor atípico</Badge>
+                    <Badge color="gray" mt="sm">Valor fuera de rango</Badge>
+                    <Badge color="red" mt="sm">Falla de comunicación</Badge>
+                </Card>
+            </Group>
 
             {/* Filtro de fechas */}
             <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
                 <TextInput
                     placeholder="Ej.: 25/10/2024"
-                    label="Alertas del día"
+                    label="Filtrar por fecha:"
                     value={filterDate}
                     onChange={(e) => setFilterDate(e.target.value)}
                     style={{ marginRight: "10px" }}
@@ -80,11 +95,10 @@ export default function AlertsPage() {
             {/* Tabla de alertas */}
             <Table highlightOnHover withBorder>
                 <thead>
-                    <tr>
-                        <th>ID</th>
+                    <tr style={{ textAlign: "center" }}>
                         <th>ID estación</th>
-                        <th>ID alerta</th>
-                        <th>Categoría</th>
+                        <th>Tipo de Alerta</th>
+                        <th>Variable</th>
                         <th>Detalles</th>
                         <th>Fecha y hora de recuperación</th>
                     </tr>
@@ -103,14 +117,14 @@ export default function AlertsPage() {
                                     ? new Date(alert.created_at).toLocaleDateString() === filterDate
                                     : true
                             )
+                            .slice(startIndex, endIndex) // Mostrar solo las filas correspondientes a la página activa
                             .map((alert) => {
                                 const badgeProps = getBadgeProps(alert.alert_type);
 
                                 return (
                                     <tr key={alert.id}>
-                                        <td>{alert.id}</td>
                                         <td>{alert.device_id}</td>
-                                        <td>{alert.alert_id}</td>
+                                        <td>{getAlertIdLabel(alert.alert_id)}</td>
                                         <td>
                                             <Badge color={badgeProps.color} variant="filled">
                                                 {badgeProps.label}
@@ -137,8 +151,9 @@ export default function AlertsPage() {
             </Table>
 
             <Pagination
-                total={alerts.length > 10 ? Math.ceil(alerts.length / 10) : 1}
-                defaultValue={1}
+                total={Math.ceil(alerts.length / rowsPerPage)}
+                value={activePage}
+                onChange={setActivePage}
                 mt="lg"
             />
         </div>

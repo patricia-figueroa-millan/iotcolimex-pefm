@@ -33,7 +33,7 @@ export default function Layout({ children }: any) {
     { label: "Gráficas", href: "/recharts-test", icon: "./barras.png" },
     { label: "Reportes", href: "/reports", icon: "./table.png" },
     { label: "Alertas", href: "/alerts", icon: "./alerta.png" },
-    // { label: "Análisis", href: "/analysis", icon: "./analysis.png" },
+    { label: "Visualización de datos", href: "/data-visualization", icon: "./visualizacion.png" },
   ];
 
   if (!session) return <>{children}</>;
