@@ -79,17 +79,17 @@ export default function AlertsPage() {
             </Group>
 
             {/* Filtro de fechas */}
-            <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
-                <TextInput
-                    placeholder="Ej.: 25/10/2024"
-                    label="Filtrar por fecha:"
-                    value={filterDate}
-                    onChange={(e) => setFilterDate(e.target.value)}
-                    style={{ marginRight: "10px" }}
-                />
-                <ActionIcon variant="light" color="blue" size="lg">
-                    <IconFilter size={24} />
-                </ActionIcon>
+            <div style={{ display: "flex", alignItems: "flex-end", gap: "10px", marginBottom: "20px" }}>
+                    <TextInput
+                        placeholder="Ej.: 25/10/2024"
+                        label="Filtrar por fecha:"
+                        value={filterDate}
+                        onChange={(e) => setFilterDate(e.target.value)}
+                        style={{ gap: "10px" }}
+                    />
+                    <ActionIcon variant="light" color="blue" size="lg">
+                        <IconFilter size={30} />
+                    </ActionIcon>
             </div>
 
             {/* Tabla de alertas */}

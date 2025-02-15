@@ -8,6 +8,8 @@ import { SessionContextProvider, Session } from "@supabase/auth-helpers-react";
 import Layout from "@/components/Layout";
 import { Notifications } from "@mantine/notifications";
 import AutoNotification from "@/components/NotificationComponent";
+import "@/styles/globals.css";
+
 
 export default function App({
   Component,

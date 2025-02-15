@@ -80,6 +80,10 @@
   padding: 4rem 0;
 }
 
+.notification {
+  font-weight: bold;
+}
+
 .center::before {
   background: var(--secondary-glow);
   border-radius: 50%;
