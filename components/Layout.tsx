@@ -25,7 +25,7 @@ export default function Layout({ children }: any) {
 
   async function handleSignOut() {
     await supabase.auth.signOut();
-    router.push("/");
+    router.push("/login");
   }
 
   const navLinks = [

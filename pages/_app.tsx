@@ -16,37 +16,34 @@ export default function App({
   Component,
   pageProps,
 }: AppProps<{ initialSession: Session }>) {
-  const [supabase] = useState(() => createBrowserSupabaseClient());
-  const router = useRouter();
+  const [supabase] = useState(() => createBrowserSupabaseClient({
+    cookieOptions: {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 7 días
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    },
+  })
+  );
+  
+  return (
+    <MantineProvider
+      withGlobalStyles
+      withNormalizeCSS
+      theme={{ colorScheme: "light" }}
+    >
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data: session } = await supabase.auth.getSession();
-
-      if (!session) {
-        router.push("/login");
-      }
-    };
-    checkSession();
-  }, [router, supabase]);
-    return (
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{ colorScheme: "light" }}
+      <SessionContextProvider
+        supabaseClient={supabase}
+        initialSession={pageProps.initialSession}
       >
+        <Notifications position="top-right" zIndex={2077} />
+        <Layout>
+          <AutoNotification />
+          <Component {...pageProps} />
+        </Layout>
+      </SessionContextProvider>
 
-        <SessionContextProvider
-          supabaseClient={supabase}
-          initialSession={pageProps.initialSession}
-        >
-          <Notifications position="top-right" zIndex={2077} />
-          <Layout>
-            <AutoNotification />
-            <Component {...pageProps} />
-          </Layout>
-        </SessionContextProvider>
-
-      </MantineProvider >
-    );
-  }
+    </MantineProvider >
+  );
+}

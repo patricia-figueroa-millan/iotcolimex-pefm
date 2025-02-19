@@ -1,11 +1,5 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 const Login = () => {
   const router = useRouter();
@@ -15,33 +9,23 @@ const Login = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
 
-    if (error) {
-      setErrorMessage("Correo o contraseña incorrectos.");
+    const result = await response.json();
+    console.log(result);
+    if (!response.ok) {
+      setErrorMessage(result.message);
       return;
     }
 
-    // Guardar sesión en cookie
-    document.cookie = `auth-token=${data.session?.access_token}; path=/; Secure; HttpOnly; SameSite=Lax`;
-
-    // Verificar si el usuario existe en la tabla 'users'
-    const { data: userData } = await supabase
-      .from("users")
-      .select("*")
-      .eq("email", email)
-      .single();
-
-    if (!userData) {
-      setErrorMessage("El usuario no está registrado en la base de datos.");
-      return;
-    }
-
-    router.push("/Account"); // Redirigir al dashboard si el login es exitoso
+    // Redirigir al dashboard
+    router.push("/account");
   };
 
   return (
