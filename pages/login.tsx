@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const Login = () => {
   const router = useRouter();
@@ -23,9 +24,8 @@ const Login = () => {
       setErrorMessage(result.message);
       return;
     }
-
-    // Redirigir al dashboard
-    router.push("/account");
+      
+    router.replace("/dashboard"); // Redirige automáticamente
   };
 
   return (

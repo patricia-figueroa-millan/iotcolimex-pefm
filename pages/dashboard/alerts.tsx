@@ -10,10 +10,8 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IconFilter } from "@tabler/icons-react";
-// @ts-ignore
-import { Database } from "../utils/database.types";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import { AlertId, getAlertIdDescription, getAlertTypeLabel } from "../context/types";
+import { AlertId, getAlertIdDescription, getAlertTypeLabel } from "../../context/types";
 
 type LocalAlert = {
     id: number;
@@ -25,7 +23,7 @@ type LocalAlert = {
 };
 
 export default function AlertsPage() {
-    const supabase = useSupabaseClient<Database>();
+    const supabase = useSupabaseClient();
     const [alerts, setAlerts] = useState<LocalAlert[]>([]);
     const [loading, setLoading] = useState(true);
     const [filterDate, setFilterDate] = useState("");

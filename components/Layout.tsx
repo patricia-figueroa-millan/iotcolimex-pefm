@@ -29,13 +29,12 @@ export default function Layout({ children }: any) {
   }
 
   const navLinks = [
-    { label: "Tablero", href: "/", icon: "./tablero.png" },
-    { label: "Gráficas", href: "/recharts-test", icon: "./barras.png" },
-    { label: "Reportes", href: "/reports", icon: "./table.png" },
-    { label: "Alertas", href: "/alerts", icon: "./alerta.png" },
-    // { label: "Visualización de datos", href: "/data-visualization", icon: "./visualizacion.png" },
+    { label: "Tablero", href: "/dashboard/account", icon: "/dashboard/tablero.png" },
+    { label: "Gráficas", href: "/dashboard/recharts-test", icon: "/dashboard/barras.png" },
+    { label: "Reportes", href: "/dashboard/reports", icon: "/dashboard/table.png" },
+    { label: "Alertas", href: "/dashboard/alerts", icon: "/dashboard/alerta.png" }
   ];
-
+  
   if (!session) return <>{children}</>;
 
   return (

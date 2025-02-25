@@ -9,7 +9,7 @@ import Layout from "@/components/Layout";
 import { Notifications } from "@mantine/notifications";
 import AutoNotification from "@/components/NotificationComponent";
 import "@/styles/globals.css";
-import { useRouter } from "next/router";
+import AuthWrapper from "@/components/AuthWrapper";
 
 
 export default function App({
@@ -38,10 +38,12 @@ export default function App({
         initialSession={pageProps.initialSession}
       >
         <Notifications position="top-right" zIndex={2077} />
+        <AuthWrapper>
         <Layout>
           <AutoNotification />
           <Component {...pageProps} />
         </Layout>
+        </AuthWrapper>
       </SessionContextProvider>
 
     </MantineProvider >

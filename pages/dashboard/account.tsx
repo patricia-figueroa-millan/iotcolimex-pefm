@@ -3,8 +3,10 @@ import Account from '@/components/Account'
 
 const AccountPages = () => {
   return (
-    <Account/>
+    <div>
+      <Account />
+    </div>
   )
 }
 
-export default AccountPages
+export default AccountPages;

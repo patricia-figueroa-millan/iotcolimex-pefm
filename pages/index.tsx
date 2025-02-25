@@ -1,8 +1,21 @@
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const Home = () => {
   const router = useRouter();
+  const supabase = useSupabaseClient();
+  
+  useEffect(() => {
+    async function getSession() {
+      const { data, error } = await supabase.auth.getSession();
+      if (data.session) {
+        router.push("/account");
+      }
+    }
+    getSession();
+  }, []); 
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
