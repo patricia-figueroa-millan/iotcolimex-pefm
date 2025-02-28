@@ -1,23 +1,25 @@
 import {
+  ActionIcon,
   AppShell,
-  Navbar,
-  Header,
-  Image,
-  NavLink,
   Box,
   Button,
-  ActionIcon,
+  Header,
+  Image,
+  Navbar,
+  NavLink,
   useMantineTheme,
 } from "@mantine/core";
-import { useSupabaseClient, useSession } from "@supabase/auth-helpers-react";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { IconSun, IconMoon } from "@tabler/icons-react";
+import { useState, useContext } from "react";
+import { IconMoon, IconSun } from "@tabler/icons-react";
 import Link from "next/link";
+import { LocalSessionContext } from "@/hooks/use-local-session";
 
-export default function Layout({ children }: any) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const session = useSession();
+  const { isLoggedIn, logout } = useContext(LocalSessionContext);
   const supabase = useSupabaseClient();
   const theme = useMantineTheme();
   const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
@@ -25,17 +27,35 @@ export default function Layout({ children }: any) {
 
   async function handleSignOut() {
     await supabase.auth.signOut();
+    logout();
     router.push("/login");
   }
 
   const navLinks = [
-    { label: "Tablero", href: "/dashboard/account", icon: "/dashboard/tablero.png" },
-    { label: "Gráficas", href: "/dashboard/recharts-test", icon: "/dashboard/barras.png" },
-    { label: "Reportes", href: "/dashboard/reports", icon: "/dashboard/table.png" },
-    { label: "Alertas", href: "/dashboard/alerts", icon: "/dashboard/alerta.png" }
+    {
+      label: "Tablero",
+      href: "/dashboard/account",
+      icon: "/dashboard/tablero.png",
+    },
+    {
+      label: "Gráficas",
+      href: "/dashboard/recharts-test",
+      icon: "/dashboard/barras.png",
+    },
+    {
+      label: "Reportes",
+      href: "/dashboard/reports",
+      icon: "/dashboard/table.png",
+    },
+    {
+      label: "Alertas",
+      href: "/dashboard/alerts",
+      icon: "/dashboard/alerta.png",
+    },
   ];
-  
-  if (!session) return <>{children}</>;
+
+  // We use the local session context to determine if user is logged.
+  if (!isLoggedIn) return <>{children}</>;
 
   return (
     <>
@@ -113,14 +133,14 @@ export default function Layout({ children }: any) {
                         active={router.pathname === link.href}
                         variant="subtle"
                         style={{
-                          color: router.pathname === link.href
-                            ? "#0288D1"
-                            : darkMode
-                            ? "#E0E0E0"
-                            : "#333",
-                          fontWeight: router.pathname === link.href
-                            ? "bold"
-                            : "normal",
+                          color:
+                            router.pathname === link.href
+                              ? "#0288D1"
+                              : darkMode
+                              ? "#E0E0E0"
+                              : "#333",
+                          fontWeight:
+                            router.pathname === link.href ? "bold" : "normal",
                         }}
                       />
                     )}

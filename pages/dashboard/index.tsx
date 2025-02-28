@@ -1,10 +1,14 @@
-import { useRouter } from "next/router"
+"use client";
 
-export default function Dashboard(){
-    const router = useRouter();
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+
+export default function Dashboard() {
+  const router = useRouter();
+
+  useEffect(() => {
     router.push("/dashboard/account");
+  }, []);
 
-    return (
-        <h1>Dashboard</h1>
-    )
+  return <></>;
 }

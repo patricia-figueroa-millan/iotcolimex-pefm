@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { LocalSessionContext } from "@/hooks/use-local-session";
 
 const Login = () => {
   const router = useRouter();
+  const { login } = useContext(LocalSessionContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -19,12 +20,18 @@ const Login = () => {
     });
 
     const result = await response.json();
-    console.log(result);
+
+    // This enables the local session context.
+    // This is independent from Supabase's session.
+    if (response.ok && result.data.session) {
+      login();
+    }
+
     if (!response.ok) {
       setErrorMessage(result.message);
       return;
     }
-      
+
     router.replace("/dashboard"); // Redirige automáticamente
   };
 
