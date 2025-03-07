@@ -5,7 +5,7 @@ import type { AppProps } from "next/app";
 import { MantineProvider } from "@mantine/core";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider, Session } from "@supabase/auth-helpers-react";
-import Layout from "@/components/Layout";
+import BaseLayout from "@/components/BaseLayout";
 import { LocalSessionContextProvider } from "@/hooks/use-local-session";
 import AutoNotification from "@/components/NotificationComponent";
 
@@ -26,10 +26,10 @@ export default function App({
         initialSession={pageProps.initialSession}
       >
         <LocalSessionContextProvider>
-          <Layout>
+          <BaseLayout>
             <Component {...pageProps} />
             <AutoNotification />
-          </Layout>
+          </BaseLayout>
         </LocalSessionContextProvider>
       </SessionContextProvider>
     </MantineProvider>

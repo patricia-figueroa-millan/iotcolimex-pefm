@@ -16,7 +16,11 @@ import { IconMoon, IconSun } from "@tabler/icons-react";
 import Link from "next/link";
 import { LocalSessionContext } from "@/hooks/use-local-session";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
   const session = useSession();
   const { isLoggedIn, logout } = useContext(LocalSessionContext);
@@ -53,9 +57,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       icon: "/dashboard/alerta.png",
     },
   ];
-
-  // We use the local session context to determine if user is logged.
-  if (!isLoggedIn) return <>{children}</>;
 
   return (
     <>
@@ -122,6 +123,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <Image
                       src={link.icon}
                       maw={30}
+                      alt={""}
                       style={{
                         marginRight: isMenuCollapsed ? "0px" : "10px",
                         transition: "margin-right 0.3s ease",
@@ -137,8 +139,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                             router.pathname === link.href
                               ? "#0288D1"
                               : darkMode
-                              ? "#E0E0E0"
-                              : "#333",
+                                ? "#E0E0E0"
+                                : "#333",
                           fontWeight:
                             router.pathname === link.href ? "bold" : "normal",
                         }}
@@ -192,6 +194,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               }}
             >
               <Image
+                alt=""
                 src="./principalicon.jpg"
                 maw={30}
                 style={{ marginRight: "10px" }}

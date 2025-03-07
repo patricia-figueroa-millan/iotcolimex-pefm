@@ -1,12 +1,13 @@
-import React from 'react'
-import Account from '@/components/Account'
+import React from "react";
+import Account from "@/components/Account";
+import DashboardLayout from "@/components/DashboardLayout";
 
 const AccountPages = () => {
   return (
-    <div>
+    <DashboardLayout>
       <Account />
-    </div>
-  )
-}
+    </DashboardLayout>
+  );
+};
 
 export default AccountPages;

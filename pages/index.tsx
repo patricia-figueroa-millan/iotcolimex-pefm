@@ -6,7 +6,7 @@ import { useEffect } from "react";
 const Home = () => {
   const router = useRouter();
   const supabase = useSupabaseClient();
-  
+
   useEffect(() => {
     async function getSession() {
       const { data, error } = await supabase.auth.getSession();
@@ -15,7 +15,7 @@ const Home = () => {
       }
     }
     getSession();
-  }, []); 
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
@@ -59,8 +59,8 @@ const Home = () => {
         >
           <h2 className="text-xl font-bold">📊 Análisis en Tiempo Real</h2>
           <p className="mt-2">
-            Obtén datos precisos sobre la temperatura, humedad y condiciones
-            del suelo.
+            Obtén datos precisos sobre la temperatura, humedad y condiciones del
+            suelo.
           </p>
         </motion.div>
 
@@ -95,8 +95,6 @@ const Home = () => {
 };
 
 export default Home;
-
-
 
 // import { Fragment, useEffect, useState } from "react";
 // import { Auth } from "@supabase/auth-ui-react";
