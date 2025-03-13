@@ -7,6 +7,7 @@ import { Database } from "../utils/database.types";
 import { Title, Table, Button } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { format } from "date-fns";
+
 // import { CSVLink, CSVDownload } from "react-csv";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -17,7 +18,11 @@ import DashboardLayout from "@/components/DashboardLayout";
 
 export default function Reports() {
   const session = useSession();
+  // Recién agregado ///////////////////////////////////////
+  const [loadingSession, setLoadingSession] = useState(true);
+  const [loadingData, setLoadingData] = useState(false);
   const supabase = useSupabaseClient<Database>();
+
   type DataType = {
     id: number;
     fecha: Date;
@@ -29,7 +34,7 @@ export default function Reports() {
     wind_speed: number;
     soil_moisture: number;
   };
-  const [tableData, setTableData] = useState<DataType | undefined | any>([]);
+  const [tableData, setTableData] = useState<DataType | undefined | any>([])
 
   interface DateSelectorProps {
     selectedDate: Date | null;
@@ -73,34 +78,43 @@ export default function Reports() {
     return null;
   };
 
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [tableLoaded, setTableLoaded] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null)
+  const [endDate, setEndDate] = useState<Date | null>(null)
+  const [tableLoaded, setTableLoaded] = useState(false)
+
 
   useEffect(() => {
+    // 🔹 Solo ejecuta la consulta si AMBAS fechas han sido seleccionadas
+    if (!startDate || !endDate) {
+      return;
+    }
     async function fetchData() {
-      const formattedStartDate = formatStartDate(startDate);
-      const formattedEndDate = formatEndDate(endDate);
+      setLoadingData(true); // Indicar que la carga de datos ha comenzado
+      const formattedStartDate = formatStartDate(startDate)
+      const formattedEndDate = formatEndDate(endDate)
+
+      // 🔴 EVITA ENVIAR NULL A LA CONSULTA
+      if (!formattedStartDate || !formattedEndDate) {
+        return; // No ejecutar la consulta si las fechas no están definidas
+      }
+
       const { data, error } = await supabase
         .from("wx_meas")
-        .select(
-          "id, created_at, temperature, atm_pressure, rel_humidity, wind_speed, soil_moisture",
-        )
-
+        .select("id, created_at, temperature, atm_pressure, rel_humidity, wind_speed, soil_moisture")
         .gte("created_at", formattedStartDate)
-        .lte("created_at", formattedEndDate);
+        .lte("created_at", formattedEndDate)
+
+      if (error) {
+        console.error('Error al obtener datos de Supabase:', error);
+        return;
+      }
 
       if (data) {
         const formattedData = data.map((item) => {
           const createdAt = new Date(item.created_at);
-          const options: Intl.DateTimeFormatOptions = {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          };
-          const fecha = createdAt.toLocaleDateString("es", options); // Obtiene la fecha en formato de cadena
-          const hora = createdAt.toLocaleTimeString(); // Obtiene la hora en formato de cadena
+          // const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          const fecha = createdAt.toLocaleDateString("es-MX"); // Obtiene la fecha en formato de cadena
+          const hora = createdAt.toLocaleTimeString("es-MX"); // Obtiene la hora en formato de cadena
 
           return {
             ...item,
@@ -108,25 +122,21 @@ export default function Reports() {
             hora,
           };
         });
-        // @ts-ignore
+
         setTableData(formattedData);
         setTableLoaded(true);
       }
-      if (error) {
-        console.error("Error al obtener datos de Supabase:", error);
-        return [];
-      }
+      setLoadingData(false); // Indicar que la carga de datos ha terminado
     }
-    fetchData();
-  }, [startDate, endDate]);
+    fetchData()
+  }, [startDate, endDate])
 
-  const [csvData, setCSVData] = useState(null);
-  {
-    /* FUNCIÓN PARA EXPORTAR A CSV */
-  }
+
+  const [csvData, setCSVData] = useState(null)
+  {/* FUNCIÓN PARA EXPORTAR A CSV */ }
   const handleExportCSV = () => {
     if (tableData.length > 0) {
-      console.log("SI HAY DATOS EN LA TABLA");
+      console.log("SI HAY DATOS EN LA TABLA")
       const formattedCSVData = tableData.map((item: DataType) => ({
         Id: item.id,
         Fecha: `"${item.fecha}"`,
@@ -140,76 +150,43 @@ export default function Reports() {
 
       const csvHeaders = Object.keys(formattedCSVData[0]);
       const csvFileName = "data.csv";
-      setCSVData(formattedCSVData);
+      setCSVData(formattedCSVData)
       // Descargar el archivo CSV
-      const csvBlob = new Blob(
-        [
-          csvHeaders.join(",") +
-            "\n" +
-            formattedCSVData
-              .map((row: { [x: string]: any }) =>
-                csvHeaders.map((header) => row[header]).join(","),
-              )
-              .join("\n"),
-        ],
-        { type: "text/csv" },
-      );
+      const csvBlob = new Blob([csvHeaders.join(",") + "\n" + formattedCSVData.map((row: { [x: string]: any; }) => csvHeaders.map(header => row[header]).join(",")).join("\n")], { type: 'text/csv' });
       const csvUrl = URL.createObjectURL(csvBlob);
       const a = document.createElement("a");
       a.href = csvUrl;
       a.download = csvFileName;
       a.click();
     }
-    console.log("NO HAY DATOS EN LA TABLA y agregar return null");
+    console.log("NO HAY DATOS EN LA TABLA y agregar return null")
   };
 
-  {
-    /* FUNCIÓN PARA EXPORTAR A PDF */
-  }
+
+
+  {/* FUNCIÓN PARA EXPORTAR A PDF */ }
   const handleSavePDF = () => {
     if (tableData.length > 0) {
-      console.log("Generando PDF");
+      console.log("Generando PDF")
 
       const doc = new jsPDF({
-        orientation: "landscape",
-      });
+        orientation: 'landscape'
+      })
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
       const imageWidth = 45; // Ancho de la imagen en milímetros
       const imageHeight = 15; // Alto de la imagen en milímetros
       const imageX = pageWidth - imageWidth - 8; // Posición X de la imagen (derecha)
       const imageY = 3; // Posición Y de la imagen (arriba)
-      doc.setFontSize(16);
-      doc.text(
-        "Sistema IoT para Monitorización de Condiciones Climáticas en Cultivos de Limón Mexicano",
-        10,
-        10,
-      );
-      doc.setFontSize(13);
-      doc.text("Reporte histórico por periodo", 10, 17);
-      const imageUrl = "./coeplim.png";
-      doc.addImage(imageUrl, "PNG", imageX, imageY, imageWidth, imageHeight);
+      doc.setFontSize(16)
+      doc.text('Sistema IoT para Monitorización de Condiciones Climáticas en Cultivos de Limón Mexicano', 10, 10);
+      doc.setFontSize(13)
+      doc.text('Reporte histórico por periodo', 10, 17,);
+      const imageUrl = './coeplim.png'
+      doc.addImage(imageUrl, 'PNG', imageX, imageY, imageWidth, imageHeight)
       // Define las columnas y filas de la tabla
-      const columns = [
-        "Id",
-        "Fecha",
-        "Hora",
-        "Temperatura",
-        "Presión Atmosférica",
-        "Humedad Relativa",
-        "Velocidad Viento",
-        "Humedad Suelo",
-      ];
-      type DataRow = [
-        number,
-        string,
-        string,
-        number,
-        number,
-        number,
-        number,
-        number,
-      ];
+      const columns = ["Id", "Fecha", "Hora", "Temperatura", "Presión Atmosférica", "Humedad Relativa", "Velocidad Viento", "Humedad Suelo"];
+      type DataRow = [number, string, string, number, number, number, number, number];
       const data: DataRow[] = tableData.map((item: DataType) => [
         item.id,
         item.fecha.toString(),
@@ -229,9 +206,21 @@ export default function Reports() {
         margin: { left: 10, right: 10 }, // Márgenes izquierdo y derecho
       });
       // Guarda el PDF con un nombre específico
-      doc.save("tabla.pdf");
+      doc.save('tabla.pdf');
+
     }
+
   };
+
+  useEffect(() => {
+    if (session !== undefined) {
+      setLoadingSession(false);
+    }
+  }, [session]);
+
+  if (loadingSession) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <DashboardLayout>
@@ -256,12 +245,7 @@ export default function Reports() {
         </div>
       ) : (
         <Fragment>
-          <Title
-            order={1}
-            style={{ marginBottom: "20px", textAlign: "center" }}
-          >
-            Datos de la Tabla
-          </Title>
+          <Title order={1} style={{ marginBottom: "20px", textAlign: "center" }}>Datos de la Tabla</Title>
 
           <div id="parent" style={{ display: "flex" }}>
             <div id="wide" style={{ flex: "1" }}>
@@ -279,64 +263,68 @@ export default function Reports() {
               />
             </div>
           </div>
-          <div>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Id</th>
-                  <th>Fecha</th>
-                  <th>Hora</th>
-                  <th>Temperatura</th>
-                  <th>Presión Atmosférica</th>
-                  <th>Humedad Relativa</th>
-                  <th>Velocidad Viento</th>
-                  <th>Humedad Suelo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tableData.map((item: any) => (
-                  <tr key={item.id}>
-                    <td>{item.id}</td>
-                    <td>{item.fecha}</td>
-                    <td>{item.hora}</td>
-                    <td>{item.temperature}</td>
-                    <td>{item.atm_pressure}</td>
-                    <td>{item.rel_humidity}</td>
-                    <td>{item.wind_speed}</td>
-                    <td>{item.soil_moisture}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </div>
-          <div style={{ float: "right" }}>
-            {/*
-        <Button style={{ color: "white", backgroundColor: "green" }} onClick={handleExportCSV}>
-          Descargar CSV
-        </Button>
 
-        <Button style={{ color: "white", backgroundColor: "red" }} onClick={handleSavePDF}>
-          Descargar PDF
-        </Button>
-        */}
-            <Button
-              style={{ color: "white", backgroundColor: "green" }}
-              onClick={handleExportCSV}
-              disabled={!tableLoaded} // Deshabilita el botón si la tabla no se ha cargado
-            >
-              Descargar CSV
-            </Button>
+          {/* 🔹 Solo mostrar la tabla si se han seleccionado ambas fechas */}
+          {startDate && endDate && (
+            <div>
+              {loadingData ? (
+                <div>Cargando datos...</div>
+              ) : tableData.length > 0 ? (
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Fecha</th>
+                      <th>Hora</th>
+                      <th>Temperatura</th>
+                      <th>Presión Atmosférica</th>
+                      <th>Humedad Relativa</th>
+                      <th>Velocidad Viento</th>
+                      <th>Humedad Suelo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tableData.map((item: any) => (
+                      <tr key={item.id}>
+                        <td>{item.id}</td>
+                        <td>{item.fecha}</td>
+                        <td>{item.hora}</td>
+                        <td>{item.temperature}</td>
+                        <td>{item.atm_pressure}</td>
+                        <td>{item.rel_humidity}</td>
+                        <td>{item.wind_speed}</td>
+                        <td>{item.soil_moisture}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              ) : (
+                <div>No hay datos para mostrar</div>
+              )}
+            </div>
 
-            <Button
-              style={{ color: "white", backgroundColor: "red" }}
-              onClick={handleSavePDF}
-              disabled={!tableLoaded} // Deshabilita el botón si la tabla no se ha cargado
-            >
-              Descargar PDF
-            </Button>
-          </div>
+          )}
         </Fragment>
       )}
     </DashboardLayout>
+
   );
 }
+
+{/* <div style={{ float: "right" }}>
+            
+<Button
+  style={{ color: "white", backgroundColor: "green" }}
+  onClick={handleExportCSV}
+  disabled={!tableLoaded} // Deshabilita el botón si la tabla no se ha cargado
+>
+  Descargar CSV
+</Button>
+
+<Button
+  style={{ color: "white", backgroundColor: "red" }}
+  onClick={handleSavePDF}
+  disabled={!tableLoaded} // Deshabilita el botón si la tabla no se ha cargado
+>
+  Descargar PDF
+</Button> */}

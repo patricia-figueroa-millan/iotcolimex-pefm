@@ -123,7 +123,7 @@ export default function AlertsPage() {
           <thead>
             <tr style={{ textAlign: "center" }}>
               <th>ID estación</th>
-              <th>Tipo de Alerta</th>
+              <th>Tipo de alerta</th>
               <th>Variable</th>
               <th>Detalles</th>
               <th>Fecha y hora de recuperación</th>

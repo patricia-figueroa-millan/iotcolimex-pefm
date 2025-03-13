@@ -1,6 +1,9 @@
 import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import { LocalSessionContext } from "@/hooks/use-local-session";
+import { Paper, TextInput, PasswordInput, Button, Title, Text, Container, Group, Stack } from "@mantine/core";
+import { IconLock, IconMail } from "@tabler/icons-react";
+import Image from "next/image";
 
 const Login = () => {
   const router = useRouter();
@@ -21,41 +24,74 @@ const Login = () => {
 
     const result = await response.json();
 
-    // This enables the local session context.
-    // This is independent from Supabase's session.
     if (response.ok && result.data.session) {
       login();
-    }
-
-    if (!response.ok) {
+    } else {
       setErrorMessage(result.message);
       return;
     }
 
-    router.replace("/dashboard"); // Redirige automáticamente
+    router.replace("/dashboard");
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "100px auto", padding: "20px" }}>
-      <h1>Iniciar sesión</h1>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Iniciar sesión</button>
-      </form>
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+    <div style={{
+      width: "100vw",
+      height: "100vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      background: "url('/background-lemon.jpg') no-repeat center center",
+      backgroundSize: "cover"
+    }}>
+      <Container size={420} p="md">
+        <Paper withBorder shadow="md" p={30} radius="md" style={{ background: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(10px)" }}>
+          
+          {/* Logo */}
+          <div style={{ textAlign: "center" }}>
+            <Image src="/logo.png" alt="IoTColimex logo" width={100} height={100} />
+          </div>
+
+          <Title order={2} align="center" mt="md" color="green">
+            Bienvenido a IoTColimex
+          </Title>
+          <Text size="sm" align="center" color="dimmed" mt={5}>
+            Inicia sesión para monitorear tus cultivos
+          </Text>
+
+          <form onSubmit={handleLogin}>
+            <Stack spacing="sm" mt="md">
+              <TextInput
+                label="Correo electrónico"
+                placeholder="tuemail@example.com"
+                icon={<IconMail size={18} />}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              
+              <PasswordInput
+                label="Contraseña"
+                placeholder="********"
+                icon={<IconLock size={18} />}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+
+              {errorMessage && <Text color="red" size="sm">{errorMessage}</Text>}
+
+              <Button type="submit" fullWidth mt="md" color="green">
+                Iniciar sesión
+              </Button>
+            </Stack>
+          </form>
+
+          <Group position="center" mt="md">
+            <Text size="xs" color="dimmed">¿Olvidaste tu contraseña? <a href="/forgot-password" style={{ color: "green" }}>Recupérala aquí</a></Text>
+          </Group>
+        </Paper>
+      </Container>
     </div>
   );
 };
