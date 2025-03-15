@@ -97,8 +97,6 @@ export default function ReachartsTest() {
 
   const timeDA1 = obtenerHoraParaDiaAnterior(2, 0, 0);
   const timeDA2 = obtenerHoraParaDiaAnterior(15, 0, 0);
-  console.log("FECHA timeDA1: ", timeDA1.toISOString());
-  console.log("FECHA timeDA2: ", timeDA2.toISOString());
 
   const timeA = new Date(
     currentDate.getFullYear(),
@@ -139,11 +137,7 @@ export default function ReachartsTest() {
     item.created_at.slice(11, 16),
   );
 
-  {
-    /*
-  console.log("Valor de temperatura: ",temperatura)
-  */
-  }
+  
   // Aquí deberías obtener los datos que vienen de Supabase
   // Revisa el formato en que vienen para que puedas acomodarlos
 
@@ -185,7 +179,7 @@ export default function ReachartsTest() {
       />
     );
   }
-  console.log("FECHA DEL SELECTOR: ", selectedDate);
+
 
   // CONSTRUCCIÓN DE TIEMPO CON ESTADOS
   const timeAS = selectedDate
@@ -198,7 +192,6 @@ export default function ReachartsTest() {
         0,
       )
     : new Date();
-  console.log("FECHA timeAS: ", timeAS.toISOString());
   const timeBS = selectedDate
     ? new Date(
         selectedDate.getFullYear(),
@@ -209,21 +202,11 @@ export default function ReachartsTest() {
         0,
       )
     : new Date();
-  console.log("FECHA timeBS: ", timeBS.toISOString());
 
   ///////////////////////////////////////////////////////////////////////////////////
 
   const formattedDate = selectedDate ? format(selectedDate, "dd/MM/yyyy") : "";
 
-  {
-    /* Revisamos los horarios de inicio y fin, y los tres horarios (8,14 y 20)
-  console.log("Fecha INICIO: ", time1.toISOString())
-  console.log("Fecha FIN: ", time2.toISOString())
-  console.log("Fecha a las 8 hrs: ", timeA.toISOString())
-  console.log("Fecha a las 14 hrs: ", timeB.toISOString())
-  console.log("Fecha a las 20 hrs: ", timeC.toISOString())
-  */
-  }
   const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
@@ -240,17 +223,11 @@ export default function ReachartsTest() {
         .lte("created_at", timeBS.toISOString());
       // @ts-ignore
 
-      console.log("Respuesta general de Supabase: ", response.data);
 
       if (response.data && response.data.length > 0) {
         // @ts-ignore
         setMeas(response.data);
-
-        console.log("RESPUESTA DE SUPABASE: ", response.data);
       } else {
-        console.log(
-          "No hay datos disponibles para el rango de horas especificado",
-        );
         openModal();
       }
     };
@@ -286,16 +263,10 @@ export default function ReachartsTest() {
     // Procesar las mediciones filtradas
     // ...
   } else {
-    console.log(
-      "No hay mediciones disponibles para los horarios especificados.",
-    );
+    // No hay mediciones disponibles para los horarios específicos
   }
   // El arreglo "medicionesFiltradas" ahora contiene solo las mediciones correspondientes a los horarios específicos
-  {
-    /*
-console.log("ARREGLO FILTRADO1: ",medicionesFiltradas);
-*/
-  }
+
   if (medicionesFiltradas && medicionesFiltradas.length > 0) {
     const medicionesOrdenadas = medicionesFiltradas.sort(
       (
@@ -314,17 +285,9 @@ console.log("ARREGLO FILTRADO1: ",medicionesFiltradas);
     );
 
     // El arreglo "medicionesOrdenadas" ahora está ordenado según los horarios específicos en orden descendente
-    {
-      /*
-console.log("ARREGLO ORDENADO: ",medicionesOrdenadas);
-*/
-    }
+  
     const medicionesRevertidas = medicionesOrdenadas.reverse();
-    {
-      /*
-console.log("ARREGLO ORDENADO INVERTIDO : ",medicionesRevertidas)
-*/
-    }
+   
     const medicionesHorario1 = medicionesRevertidas.filter(
       (medicion: { created_at: string | number | Date }) => {
         const hora = new Date(medicion.created_at).getHours();
@@ -507,23 +470,9 @@ console.log("ARREGLO ORDENADO INVERTIDO : ",medicionesRevertidas)
     });
 
     // Ahora, dataTemp contiene objetos con las propiedades date y T
-    console.log("Objeto de temperatura: ", dataTemp);
-    console.log("Objeto de presion: ", dataAP);
-    console.log("Objeto de humedad relativa: ", dataRH);
-    console.log("Objeto de velocidad del viento: ", dataWS);
-    console.log("Objeto de humedad del suelo: ", dataSM);
+    
   } else {
-    console.log(
-      "No hay mediciones disponibles para los horarios especificados.",
-    );
-  }
-
-  {
-    /*
-  console.log(">>>> Resultado GENERAL: ", meas)
-  console.log(">>>> Resultado ESPECÍFICO: ", meas?.[0])
-  let temperatura:number = Number(meas?.[0]?.temperature)
-*/
+    // No hay mediciones disponibles para los horarios específicos
   }
 
   return (

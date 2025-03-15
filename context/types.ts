@@ -48,4 +48,45 @@ export enum AlertId {
         return "Desconocido";
     }
   };
-  
+
+// FUNCIONES PARA NOTIFICATION COMPONENT
+// Función para obtener colores de las alertas
+  // Función para asignar un color dependiendo del tipo de alerta
+export const getNotificationColor = (alertId: number) => {
+    switch (alertId) {
+      case 1: // Valor atípico
+        return "orange";
+      case 2: // Valor fuera de rango
+        return "blue";
+      case 3: // Falla de comunicación
+        return "red";
+      default:
+        return "gray";
+    }
+  };
+
+export const getTitleColor = (alertId: number) => {
+        switch (alertId) {
+          case 1: // Valor atípico
+            return "orange";
+          case 2: // Valor fuera de rango
+            return "blue";
+          case 3: // Falla de comunicación
+            return "red";
+          default:
+            return "gray";
+        }
+      };
+
+export const getNotificationId = (alertId: number) => {
+    switch (alertId) {
+      case 1: // Valor atípico
+        return "valor atípico";
+      case 2: // Valor fuera de rango
+        return "valor fuera de rango";
+      case 3: // Falla de comunicación
+        return "falla de comunicación";
+      default:
+        return "Falla desconocida";
+    }
+  }

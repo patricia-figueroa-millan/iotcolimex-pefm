@@ -1,12 +1,12 @@
 import {
   Table,
-  Badge,
   Title,
   TextInput,
   ActionIcon,
   Pagination,
   Card,
   Group,
+  Container,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IconFilter } from "@tabler/icons-react";
@@ -17,6 +17,7 @@ import {
   getAlertTypeLabel,
 } from "../../context/types";
 import DashboardLayout from "@/components/DashboardLayout";
+import { motion } from "framer-motion";
 
 type LocalAlert = {
   id: number;
@@ -52,26 +53,21 @@ export default function AlertsPage() {
     fetchAlerts();
   }, []);
 
-  const getBadgeProps = (type: number) => {
-    return {
-      label: getAlertTypeLabel(type),
-      color:
-        type === 1
-          ? "orange"
-          : type === 2
-            ? "gray"
-            : type === 3
-              ? "blue"
-              : type === 4
-                ? "aquamarine"
-                : type === 5
-                  ? "brown"
-                  : "yellow",
-    };
-  };
-
-  const getAlertIdLabel = (alertId: AlertId) => {
-    return getAlertIdDescription(alertId);
+  const getAlertColor = (type: number) => {
+    switch (type) {
+      case 1:
+        return "#E67D22"; // Naranja
+      case 2:
+        return "#86959B"; // Gris
+      case 3:
+        return "#00A6D6"; // Rojo
+      case 4:
+        return "#73B1B8"; // Azul celeste
+      case 5:
+        return "#A77540"; // Marrón
+      default:
+        return "#ffeb3b"; // Amarillo
+    }
   };
 
   // Calcular el rango de alertas para la página activa
@@ -80,110 +76,117 @@ export default function AlertsPage() {
 
   return (
     <DashboardLayout>
-      <div style={{ padding: "20px" }}>
-        <Group position="apart">
-          <Title order={2} mb="lg">
-            Histórico de alertas lanzadas
-          </Title>
-          <Card shadow="sm" padding="lg" radius="md" style={{ maxWidth: 300 }}>
-            <Title order={5}>Leyenda</Title>
-            <Badge color="orange">Valor atípico</Badge>
-            <Badge color="gray" mt="sm">
-              Valor fuera de rango
-            </Badge>
-            <Badge color="red" mt="sm">
-              Falla de comunicación
-            </Badge>
-          </Card>
-        </Group>
-
-        {/* Filtro de fechas */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            gap: "10px",
-            marginBottom: "20px",
-          }}
+      <Container size="xl">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <TextInput
-            placeholder="Ej.: 25/10/2024"
-            label="Filtrar por fecha:"
-            value={filterDate}
-            onChange={(e) => setFilterDate(e.target.value)}
-            style={{ gap: "10px" }}
-          />
-          <ActionIcon variant="light" color="blue" size="lg">
-            <IconFilter size={30} />
-          </ActionIcon>
-        </div>
+          <Group position="apart">
+            <Title order={2} mb="lg">
+              📌 Histórico de Alertas
+            </Title>
+            <Card shadow="xl" padding="lg" radius="md" style={{ maxWidth: 300 }}>
+              <Title order={5}>📖 Leyenda</Title>
+              <p style={{ color: "#ff9800", fontWeight: "bold" }}>Valor atípico</p>
+              <p style={{ color: "#607d8b", fontWeight: "bold" }}>Valor fuera de rango</p>
+              <p style={{ color: "#f44336", fontWeight: "bold" }}>Falla de comunicación</p>
+            </Card>
+          </Group>
 
-        {/* Tabla de alertas */}
-        <Table highlightOnHover withBorder>
-          <thead>
-            <tr style={{ textAlign: "center" }}>
-              <th>ID estación</th>
-              <th>Tipo de alerta</th>
-              <th>Variable</th>
-              <th>Detalles</th>
-              <th>Fecha y hora de recuperación</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={6} style={{ textAlign: "center" }}>
-                  Cargando alertas...
-                </td>
-              </tr>
-            ) : alerts.length > 0 ? (
-              alerts
-                .filter((alert) =>
-                  filterDate
-                    ? new Date(alert.created_at).toLocaleDateString() ===
+          {/* Filtro de fechas */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-end",
+              gap: "10px",
+              marginBottom: "20px",
+            }}
+          >
+            <TextInput
+              placeholder="Ej.: 25/10/2024"
+              label="Filtrar por fecha:"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+              style={{ width: "200px" }}
+            />
+            <ActionIcon variant="filled" color="blue" size="lg">
+              <IconFilter size={30} />
+            </ActionIcon>
+          </div>
+
+          {/* Tabla de alertas */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Table striped highlightOnHover withBorder withColumnBorders>
+              <thead>
+                <tr style={{ textAlign: "center", backgroundColor: "#f5f5f5" }}>
+                  <th>ID estación</th>
+                  <th>Tipo de alerta</th>
+                  <th>Variable</th>
+                  <th>Detalles</th>
+                  <th>Fecha y hora de recuperación</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "20px" }}>
+                      ⏳ Cargando alertas...
+                    </td>
+                  </tr>
+                ) : alerts.length > 0 ? (
+                  alerts
+                    .filter((alert) =>
                       filterDate
-                    : true,
-                )
-                .slice(startIndex, endIndex) // Mostrar solo las filas correspondientes a la página activa
-                .map((alert) => {
-                  const badgeProps = getBadgeProps(alert.alert_type);
+                        ? new Date(alert.created_at).toLocaleDateString() === filterDate
+                        : true
+                    )
+                    .slice(startIndex, endIndex) // Mostrar solo las filas correspondientes a la página activa
+                    .map((alert) => (
+                      <motion.tr
+                        key={alert.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        whileHover={{ scale: 1.02 }}
+                      >
+                        <td>{alert.device_id}</td>
+                        <td>{getAlertIdDescription(alert.alert_id)}</td>
+                        <td style={{ fontWeight: "bold", color: getAlertColor(alert.alert_type) }}>
+                          {getAlertTypeLabel(alert.alert_type)}
+                        </td>
+                        <td>{alert.description}</td>
+                        <td>
+                          {new Date(alert.created_at).toLocaleString("es-MX", {
+                            dateStyle: "short",
+                            timeStyle: "short",
+                          })}
+                        </td>
+                      </motion.tr>
+                    ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "20px" }}>
+                      ❌ No se encontraron alertas.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          </motion.div>
 
-                  return (
-                    <tr key={alert.id}>
-                      <td>{alert.device_id}</td>
-                      <td>{getAlertIdLabel(alert.alert_id)}</td>
-                      <td>
-                        <Badge color={badgeProps.color} variant="filled">
-                          {badgeProps.label}
-                        </Badge>
-                      </td>
-                      <td>{alert.description}</td>
-                      <td>
-                        {new Date(alert.created_at).toLocaleString("es-MX", {
-                          dateStyle: "short",
-                          timeStyle: "short",
-                        })}
-                      </td>
-                    </tr>
-                  );
-                })
-            ) : (
-              <tr>
-                <td colSpan={6} style={{ textAlign: "center" }}>
-                  No se encontraron alertas.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </Table>
-
-        <Pagination
-          total={Math.ceil(alerts.length / rowsPerPage)}
-          value={activePage}
-          onChange={setActivePage}
-          mt="lg"
-        />
-      </div>
+          <Pagination
+            total={Math.ceil(alerts.length / rowsPerPage)}
+            value={activePage}
+            onChange={setActivePage}
+            mt="lg"
+          />
+        </motion.div>
+      </Container>
     </DashboardLayout>
   );
 }

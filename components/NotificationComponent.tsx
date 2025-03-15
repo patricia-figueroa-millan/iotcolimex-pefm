@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { connect, MqttClient } from "mqtt";
+import { notifications } from "@mantine/notifications";
 import { showNotification } from "@mantine/notifications";
-import { IconAlertTriangle, IconAlertCircle, IconBellRinging } from "@tabler/icons-react";
+import { getAlertIdDescription, getAlertTypeLabel, getNotificationColor, getTitleColor, getNotificationId } from "@/context/types";
+import { IconAlertTriangle, IconAlertCircleFilled, IconAlertSquareRounded, IconAlertCircle, IconBellRinging } from "@tabler/icons-react";
 
 // Configuración del broker MQTT y tópico
 const broker_url = process.env.NEXT_PUBLIC_BROKER_URI as string;
@@ -10,20 +12,6 @@ const topic = process.env.NEXT_PUBLIC_MQTT_TOPIC as string;
 const NotificationComponent = () => {
   const [client, setClient] = useState<MqttClient | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-
-  // Función para asignar colores a la notificación según el tipo de alerta
-  const getNotificationColor = (alertId: number) => {
-    switch (alertId) {
-      case 1:
-        return "orange"; // Valor atípico
-      case 2:
-        return "purple"; // Valor fuera de rango
-      case 3:
-        return "red"; // Falla de comunicación
-      default:
-        return "gray"; // Otros casos
-    }
-  };
 
   // Función para asignar un icono a la notificación
   const getNotificationIcon = (alertId: number) => {
@@ -62,16 +50,34 @@ const NotificationComponent = () => {
       if (receivedTopic === topic) {
         try {
           const alertMessages = JSON.parse(message.toString());
+          
+          
+          console.log("📩 Mensaje recibido desde MQTT:", alertMessages);
 
           alertMessages.forEach((alert: { alert_id: number; description: string }) => {
             showNotification({
-              title: "Nueva alerta",
-              message: alert.description,
-              color: getNotificationColor(alert.alert_id),
-              autoClose: 10000, // Se cierra en 10 segundos
-              icon: getNotificationIcon(alert.alert_id),
+              title: <div style={{ fontWeight: 'bold' }}>
+                Nueva alerta: <div style={{ color: getTitleColor(alert.alert_id) }}>
+                  {getNotificationId(alert.alert_id)}
+                </div>
+              </div>, // Título de la alerta
+              message: <div className="notification">
+                {alert.description}
+              </div>, // Descripción de la alerta
+              color: getNotificationColor(alert.alert_id), // Color según tipo de alerta
+              autoClose: 10000, // Cerrar la notificación después de 10 segundos
+              icon: alert.alert_id === 1 ? <IconAlertCircleFilled /> : alert.alert_id === 2 ? <IconAlertCircle /> : <IconAlertSquareRounded />, // Icono de la notificación
             });
           });
+          // alertMessages.map((alert: { alert_id: number; description: string }) => {
+          //   showNotification({
+          //     title: "Nueva alerta",
+          //     message: alert.description,
+          //     color: getNotificationColor(alert.alert_id),
+          //     autoClose: 10000,
+          //     icon: getNotificationIcon(alert.alert_id),
+          //   });
+          // });
         } catch (error) {
           console.error("⚠️ Error al procesar el mensaje MQTT:", error);
         }

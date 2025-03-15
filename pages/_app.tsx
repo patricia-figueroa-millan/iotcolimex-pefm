@@ -8,6 +8,7 @@ import { SessionContextProvider, Session } from "@supabase/auth-helpers-react";
 import BaseLayout from "@/components/BaseLayout";
 import { LocalSessionContextProvider } from "@/hooks/use-local-session";
 import AutoNotification from "@/components/NotificationComponent";
+import { Notifications } from '@mantine/notifications';
 
 export default function App({
   Component,
@@ -21,6 +22,8 @@ export default function App({
       withNormalizeCSS
       theme={{ colorScheme: "light" }}
     >
+      
+      <Notifications />
       <SessionContextProvider
         supabaseClient={supabase}
         initialSession={pageProps.initialSession}

@@ -136,7 +136,6 @@ export default function Reports() {
   {/* FUNCIÓN PARA EXPORTAR A CSV */ }
   const handleExportCSV = () => {
     if (tableData.length > 0) {
-      console.log("SI HAY DATOS EN LA TABLA")
       const formattedCSVData = tableData.map((item: DataType) => ({
         Id: item.id,
         Fecha: `"${item.fecha}"`,
@@ -159,7 +158,6 @@ export default function Reports() {
       a.download = csvFileName;
       a.click();
     }
-    console.log("NO HAY DATOS EN LA TABLA y agregar return null")
   };
 
 
@@ -167,7 +165,6 @@ export default function Reports() {
   {/* FUNCIÓN PARA EXPORTAR A PDF */ }
   const handleSavePDF = () => {
     if (tableData.length > 0) {
-      console.log("Generando PDF")
 
       const doc = new jsPDF({
         orientation: 'landscape'
