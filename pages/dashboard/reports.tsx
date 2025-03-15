@@ -213,7 +213,7 @@ export default function Reports() {
     if (session !== undefined) {
       setLoadingSession(false);
     }
-  }, [session]);
+  }, [session, supabase]);
 
   if (loadingSession) {
     return <div>Cargando...</div>;

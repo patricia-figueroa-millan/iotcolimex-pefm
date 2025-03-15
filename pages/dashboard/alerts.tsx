@@ -51,7 +51,7 @@ export default function AlertsPage() {
 
   useEffect(() => {
     fetchAlerts();
-  }, []);
+  }, [fetchAlerts]);
 
   const getAlertColor = (type: number) => {
     switch (type) {

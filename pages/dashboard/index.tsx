@@ -8,7 +8,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     router.push("/dashboard/account");
-  }, []);
+  }, [router]);
 
   return <></>;
 }

@@ -3,6 +3,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react'
 //@ts-ignore
 import { Database } from '../utils/database.types'
 type Profiles = Database['public']['Tables']['profiles']['Row']
+import { Image } from '@mantine/core'
 
 export default function Avatar({
   uid,
@@ -21,7 +22,7 @@ export default function Avatar({
 
   useEffect(() => {
     if (url) downloadImage(url)
-  }, [url])
+  }, [url, downloadImage])
 
   async function downloadImage(path: string) {
     try {
@@ -67,7 +68,7 @@ export default function Avatar({
   return (
     <div>
       {avatarUrl ? (
-        <img
+        <Image
           src={avatarUrl}
           alt="Avatar"
           className="avatar image"

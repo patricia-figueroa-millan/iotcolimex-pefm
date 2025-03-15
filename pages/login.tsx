@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import { LocalSessionContext } from "@/hooks/use-local-session";
 import { Paper, TextInput, PasswordInput, Button, Title, Text, Container, Group, Stack } from "@mantine/core";
+import Link from "next/link";
 import { IconLock, IconMail } from "@tabler/icons-react";
 import Image from "next/image";
 
@@ -46,7 +47,7 @@ const Login = () => {
     }}>
       <Container size={420} p="md">
         <Paper withBorder shadow="md" p={30} radius="md" style={{ background: "rgba(255, 255, 255, 0.9)", backdropFilter: "blur(10px)" }}>
-          
+
           {/* Logo */}
           <div style={{ textAlign: "center" }}>
             <Image src="/logo.png" alt="IoTColimex logo" width={100} height={100} />
@@ -69,7 +70,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              
+
               <PasswordInput
                 label="Contraseña"
                 placeholder="********"
@@ -88,7 +89,7 @@ const Login = () => {
           </form>
 
           <Group position="center" mt="md">
-            <Text size="xs" color="dimmed">¿Olvidaste tu contraseña? <a href="/forgot-password" style={{ color: "green" }}>Recupérala aquí</a></Text>
+            <Text size="xs" color="dimmed">¿Olvidaste tu contraseña? <Link href="/forgot-password" style={{ color: "green" }}>Recupérala aquí</Link></Text>
           </Group>
         </Paper>
       </Container>

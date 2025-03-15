@@ -137,7 +137,7 @@ export default function ReachartsTest() {
     item.created_at.slice(11, 16),
   );
 
-  
+
   // Aquí deberías obtener los datos que vienen de Supabase
   // Revisa el formato en que vienen para que puedas acomodarlos
 
@@ -146,9 +146,8 @@ export default function ReachartsTest() {
   const mes = fechaActual.getMonth() + 1;
   const año = fechaActual.getFullYear();
   // FECHA ACTUAL EN FORMATO
-  const fechaFormateada = `${dia < 10 ? "0" : ""}${dia}/${
-    mes < 10 ? "0" : ""
-  }${mes}/${año}`;
+  const fechaFormateada = `${dia < 10 ? "0" : ""}${dia}/${mes < 10 ? "0" : ""
+    }${mes}/${año}`;
   // FECHA ANTERIOR CON FORMATO
 
   const [startDate, setStartDate] = useState<Date | null>(
@@ -184,23 +183,23 @@ export default function ReachartsTest() {
   // CONSTRUCCIÓN DE TIEMPO CON ESTADOS
   const timeAS = selectedDate
     ? new Date(
-        selectedDate.getFullYear(),
-        selectedDate.getMonth(),
-        selectedDate.getDate(),
-        2,
-        0,
-        0,
-      )
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      2,
+      0,
+      0,
+    )
     : new Date();
   const timeBS = selectedDate
     ? new Date(
-        selectedDate.getFullYear(),
-        selectedDate.getMonth(),
-        selectedDate.getDate(),
-        15,
-        0,
-        0,
-      )
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      15,
+      0,
+      0,
+    )
     : new Date();
 
   ///////////////////////////////////////////////////////////////////////////////////
@@ -208,6 +207,11 @@ export default function ReachartsTest() {
   const formattedDate = selectedDate ? format(selectedDate, "dd/MM/yyyy") : "";
 
   const [opened, { open, close }] = useDisclosure(false);
+
+  // Función para abrir el modal
+  const openModal = () => {
+    open();
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -225,19 +229,13 @@ export default function ReachartsTest() {
 
 
       if (response.data && response.data.length > 0) {
-        // @ts-ignore
         setMeas(response.data);
       } else {
         openModal();
       }
     };
     fetchData();
-  }, [selectedDate]);
-
-  // Función para abrir el modal
-  const openModal = () => {
-    open();
-  };
+  }, [supabase, timeAS, timeBS, openModal, setMeas, selectedDate]);
 
   function calcularPromedio(datos: any[]) {
     if (datos.length === 0) return 0;
@@ -285,9 +283,9 @@ export default function ReachartsTest() {
     );
 
     // El arreglo "medicionesOrdenadas" ahora está ordenado según los horarios específicos en orden descendente
-  
+
     const medicionesRevertidas = medicionesOrdenadas.reverse();
-   
+
     const medicionesHorario1 = medicionesRevertidas.filter(
       (medicion: { created_at: string | number | Date }) => {
         const hora = new Date(medicion.created_at).getHours();
@@ -470,7 +468,7 @@ export default function ReachartsTest() {
     });
 
     // Ahora, dataTemp contiene objetos con las propiedades date y T
-    
+
   } else {
     // No hay mediciones disponibles para los horarios específicos
   }
