@@ -67,6 +67,7 @@ const Login = () => {
                 placeholder="tuemail@example.com"
                 icon={<IconMail size={18} />}
                 value={email}
+                autoFocus // Enfocar el campo al cargar la página
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
@@ -76,6 +77,7 @@ const Login = () => {
                 placeholder="********"
                 icon={<IconLock size={18} />}
                 value={password}
+                enterKeyHint="next"
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />

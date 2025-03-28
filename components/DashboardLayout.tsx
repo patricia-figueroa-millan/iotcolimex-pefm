@@ -228,14 +228,14 @@ export default function DashboardLayout({
                 style={{
                   fontSize: "22px",
                   fontWeight: "bold",
-                  color: "white", // Título ahora es BLANCO
+                  color: "white",
                   display: "flex",
                   alignItems: "center",
                 }}
               >
                 <Image
                   alt="IoTColimex Logo"
-                  src="./principalicon.jpg"
+                  src="/principalicon.jpg"
                   maw={35}
                   style={{
                     marginRight: "12px",

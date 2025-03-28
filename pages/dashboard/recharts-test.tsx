@@ -235,7 +235,8 @@ export default function ReachartsTest() {
       }
     };
     fetchData();
-  }, [supabase, timeAS, timeBS, openModal, setMeas, selectedDate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate]);
 
   function calcularPromedio(datos: any[]) {
     if (datos.length === 0) return 0;

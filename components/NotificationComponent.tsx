@@ -37,21 +37,40 @@ const NotificationComponent = () => {
     mqttClient.on("connect", () => {
       console.log("✅ Conectado al broker MQTT");
       setIsConnected(true);
+      let retryCount = 0;
+      let isSubscribed = false;
+
+      const subscribeWithRetry = () => {
+      if (isSubscribed) {
+        console.log("📡 Ya suscrito al tópico, no se intentará resuscribir.");
+        return;
+      }
+
       mqttClient.subscribe(topic, (err) => {
         if (err) {
-          console.error("❌ Error al suscribirse al tópico:", err);
+        retryCount++;
+        if (retryCount <= 3) {
+          console.warn(`⚠️ Error al suscribirse al tópico. Reintentando (${retryCount}/3)...`);
+          setTimeout(subscribeWithRetry, 10000); // Reintentar después de 10 segundos
         } else {
-          console.log(`📡 Suscrito al tópico: ${topic}`);
+          console.error("❌ Error al suscribirse al tópico después de 3 intentos:", err);
+        }
+        } else {
+        console.log(`📡 Suscrito al tópico: ${topic}`);
+        isSubscribed = true;
         }
       });
+      };
+
+      subscribeWithRetry(); // Intentar suscribirse inmediatamente
     });
 
     mqttClient.on("message", (receivedTopic, message) => {
       if (receivedTopic === topic) {
         try {
           const alertMessages = JSON.parse(message.toString());
-          
-          
+
+
           console.log("📩 Mensaje recibido desde MQTT:", alertMessages);
 
           alertMessages.forEach((alert: { alert_id: number; description: string }) => {
