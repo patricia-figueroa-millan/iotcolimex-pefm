@@ -14,6 +14,14 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
+  if (req.nextUrl.pathname === "/") {
+  return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  if (req.nextUrl.pathname === "/login" && session) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
   if (!session && req.nextUrl.pathname !== "/login") {
     return NextResponse.redirect(new URL("/login", req.url));
   }
@@ -23,10 +31,12 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    "/",
     "/dashboard/:path*",
     "/recharts-test/:path*",
     "/reports/:path*",
     "/alerts/:path*",
+    
   ],
 };
 

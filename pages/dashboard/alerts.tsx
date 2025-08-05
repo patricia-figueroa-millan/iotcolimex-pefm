@@ -15,7 +15,7 @@ import {
   AlertId,
   getAlertIdDescription,
   getAlertTypeLabel,
-} from "../../context/types";
+} from "context/types";
 import DashboardLayout from "@/components/DashboardLayout";
 import { motion } from "framer-motion";
 
@@ -41,7 +41,7 @@ export default function AlertsPage() {
     let { data, error } = await supabase
       .from("alerta")
       .select("id, device_id, alert_id, alert_type, description, created_at")
-      .order("created_at", { ascending: false });
+      .order("id", { ascending: false });
 
     if (error) console.error("Error fetching alerts:", error);
     else setAlerts(data as LocalAlert[]);
@@ -49,8 +49,30 @@ export default function AlertsPage() {
     setLoading(false);
   };
 
+  // Configurar suscripción de cambios en tiempo real
   useEffect(() => {
     fetchAlerts();
+
+    // Configurar la suscripción en tiempo real
+    const subscription = supabase
+      .channel('alerta-changes')
+      .on('postgres_changes',
+        {
+          event: '*', // escuchar todos los eventos (insert, update, delete)
+          schema: 'public',
+          table: 'alerta'
+        },
+        (payload) => {
+          console.log('Cambio en la tabla alerta:', payload);
+          fetchAlerts(); // Actualizar los datos cuando ocurra un cambio
+        }
+      )
+      .subscribe();
+
+    // Limpieza cuando el componente se desmonte
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const getAlertColor = (type: number) => {
