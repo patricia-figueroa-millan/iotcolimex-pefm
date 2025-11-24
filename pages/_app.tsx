@@ -22,7 +22,7 @@
 //       withNormalizeCSS
 //       theme={{ colorScheme: "light" }}
 //     >
-      
+
 //       <Notifications />
 //       <SessionContextProvider
 //         supabaseClient={supabase}
@@ -46,7 +46,14 @@ import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider, Session } from "@supabase/auth-helpers-react";
 import BaseLayout from "@/components/BaseLayout";
 import { LocalSessionContextProvider } from "@/hooks/use-local-session";
-import NotificationComponent from "@/components/NotificationComponent";
+// import NotificationComponent from "@/components/NotificationComponent";
+import dynamic from "next/dynamic";
+
+const NotificationComponent = dynamic(
+  () => import("@/components/NotificationComponent"),
+  { ssr: false }
+);
+
 import { Notifications } from '@mantine/notifications';
 
 export default function App({

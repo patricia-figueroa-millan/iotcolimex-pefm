@@ -109,10 +109,10 @@ export default function AlertsPage() {
               📌 Histórico de Alertas
             </Title>
             <Card shadow="xl" padding="lg" radius="md" style={{ maxWidth: 300 }}>
-              <Title order={5}>📖 Leyenda</Title>
-              <p style={{ color: "#ff9800", fontWeight: "bold" }}>Valor atípico</p>
-              <p style={{ color: "#607d8b", fontWeight: "bold" }}>Valor fuera de rango</p>
-              <p style={{ color: "#f44336", fontWeight: "bold" }}>Falla de comunicación</p>
+              <Title order={5}>📖 Notificaciones flotantes</Title>
+              <p style={{ color: "orange", fontWeight: "bold" }}>Valor atípico</p>
+              <p style={{ color: "blue", fontWeight: "bold" }}>Valor fuera de rango</p>
+              <p style={{ color: "red", fontWeight: "bold" }}>Falla de comunicación</p>
             </Card>
           </Group>
 
